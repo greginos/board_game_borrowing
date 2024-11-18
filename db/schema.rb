@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_18_195843) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_18_201208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,19 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_18_195843) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_board_games_on_user_id"
+  end
+
+  create_table "borrowings", force: :cascade do |t|
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "board_game_id", null: false
+    t.index ["board_game_id"], name: "index_borrowings_on_board_game_id"
+    t.index ["user_id"], name: "index_borrowings_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -32,4 +45,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_18_195843) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "board_games", "users"
+  add_foreign_key "borrowings", "board_games"
+  add_foreign_key "borrowings", "users"
 end
