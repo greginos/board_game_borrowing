@@ -10,17 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_18_201208) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_21_120931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "board_games", force: :cascade do |t|
-    t.integer "ean"
+    t.string "ean"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_board_games_on_user_id"
+    t.string "image_link"
   end
 
   create_table "borrowings", force: :cascade do |t|
@@ -29,9 +28,18 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_18_201208) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.bigint "board_game_id", null: false
-    t.index ["board_game_id"], name: "index_borrowings_on_board_game_id"
+    t.bigint "game_id"
+    t.index ["game_id"], name: "index_borrowings_on_game_id"
     t.index ["user_id"], name: "index_borrowings_on_user_id"
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "board_game_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_game_id"], name: "index_games_on_board_game_id"
+    t.index ["user_id"], name: "index_games_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -46,7 +54,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_18_201208) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "board_games", "users"
-  add_foreign_key "borrowings", "board_games"
+  add_foreign_key "borrowings", "games"
   add_foreign_key "borrowings", "users"
+  add_foreign_key "games", "board_games"
+  add_foreign_key "games", "users"
 end

@@ -143,7 +143,7 @@ Movies
     }
 
     .desc {
-      display: none;
+      display: contents;
     }
   }
 }
@@ -160,7 +160,7 @@ Detail
   height: 100%;
   z-index: 10;
   padding: 37px 30px 30px 255px;
-  display: none;
+  display: contents;
 
   &::before {
     content: '';
