@@ -8,7 +8,7 @@
   <h3>Scanner un code-barres</h3>
   <div style="position: relative; width: 640px; height: 480px;">
     <video data-barcode-scanner-target="video" style="width: 100%; height: 100%;" autoplay></video>
-
+    <canvas id="canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
     <script>
       navigator.mediaDevices
         .getUserMedia({
