@@ -1,2 +1,32 @@
-<h1>BoardGame#new</h1>
-<p>Find me in app/views/board_game/new.html.erb</p>
+<%= form_for @board_game, method: :post do |form| %>
+  <%= form.label :ean, "Barcode:" %>
+  <%= form.search_field :ean, id: "barcode-result", data: { barcode_scanner_target: "result" }, readonly: true %>
+  <%= form.submit "Search" %>
+<% end %>
+
+<div data-controller="barcode-scanner">
+  <h3>Scanner un code-barres</h3>
+  <div style="position: relative; width: 640px; height: 480px;">
+    <video data-barcode-scanner-target="video" style="width: 100%; height: 100%;" autoplay></video>
+
+    <script>
+      navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: "environment",
+          },
+        })
+        .then((stream) => {
+          const videoElement = document.querySelector("video");
+          videoElement.srcObject = stream;
+          videoElement.play();
+        })
+        .catch((error) => {
+          console.error("Erreur caméra :", error);
+          alert("Erreur : " + error.message);
+        });
+    </script>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 class BoardGamesController < ApplicationController
-  before_action :set_board_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_board_game, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @board_games = BoardGame.all
@@ -17,9 +17,9 @@ class BoardGamesController < ApplicationController
   end
 
   def create
-    @board_game = BoardGame.new(board_game_params)
+    board_game = BarcodeConverter.new(board_game_params[:ean]).convert
 
-    if @board_game.save
+    if board_game.present?
       redirect_to board_games_path, notice: "BoardGame was successfully created."
     else
       render :new
@@ -49,6 +49,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name)
+    params.require(:board_game).permit(:name, :ean)
   end
 end
