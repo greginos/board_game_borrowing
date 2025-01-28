@@ -4,6 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :games
   has_many :borrowings
+  has_many :games
+  has_many :board_games, through: :games
 end

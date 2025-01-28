@@ -1,0 +1,21 @@
+<div class="app">
+  <div style="display: grid;grid-template-columns: 1fr 1fr;">
+    <h2>Jeux</h2>
+    <h2><%= link_to 'Ajouter un jeu', new_board_game_path %></h2>
+  </div>
+  <section class="board_games">
+    <% @games.each do |game| %>
+      <%= link_to board_game_path(game.board_game.id) do %>
+          <div class="board_game">
+          <img src= <%="#{game.board_game.image_link}" %> alt="" class="poster" />
+          <div class="title"><%=game.board_game.name %></div>
+          <div class="info">
+              <span class="length">117 min</span>
+              <span class="year">2015</span>
+          </div>
+          <div class="desc">Description du jeu</div>
+          </div>
+      <% end %>
+    <% end %>
+  </section>
+</div>

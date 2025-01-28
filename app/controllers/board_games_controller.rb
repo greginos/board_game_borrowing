@@ -17,7 +17,7 @@ class BoardGamesController < ApplicationController
   end
 
   def create
-    board_game = BarcodeConverter.new(board_game_params[:ean]).convert
+    board_game = BarcodeConverter.new(board_game_params[:ean], current_user.id).convert
 
     if board_game.present?
       redirect_to board_games_path, notice: "BoardGame was successfully created."

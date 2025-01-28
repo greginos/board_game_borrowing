@@ -1,10 +1,8 @@
 <div class="app">
-  <header>
-    <h1>Daily<strong>UI</strong></h1>
-    <nav></nav>
-    <%= link_to 'new', new_board_game_path %>
-  </header>
-  <h2>Most Popular Movies</h2>
+  <div style="display: grid;grid-template-columns: 1fr 1fr;">
+    <h2>Most Popular Games</h2>
+    <h2><%= link_to 'Ajouter un jeu', new_board_game_path %></h2>
+  </div>
   <section class="board_games">
     <% @board_games.each do |board_game| %>
       <%= link_to board_game_path(board_game.id) do %>

@@ -1,10 +1,13 @@
 <%= form_for @board_game, method: :post do |form| %>
   <%= form.label :ean, "Barcode:" %>
-  <%= form.search_field :ean, id: "barcode-result", data: { barcode_scanner_target: "result" }, readonly: true %>
+  
+  <%= form.search_field :ean, id: "barcode-result", data: { barcode_scanner_target: "result" } %>
   <%= form.submit "Search" %>
 <% end %>
 
-<div data-controller="barcode-scanner">
+<%
+=begin%>
+ <div data-controller="barcode-scanner">
   <h3>Scanner un code-barres</h3>
   <div style="position: relative; width: 640px; height: 480px;">
     <video data-barcode-scanner-target="video" style="width: 100%; height: 100%;" autoplay></video>
@@ -29,4 +32,6 @@
         });
     </script>
   </div>
-</div>
+</div> 
+<%
+=end%>
