@@ -1,7 +1,6 @@
 class BarcodeConverter
-  def initialize(barcode, user_id)
+  def initialize(barcode)
     @barcode = barcode
-    @user_id = user_id
   end
 
   def convert
@@ -19,10 +18,6 @@ class BarcodeConverter
     element = doc.search(".wrapper_product .wrapper_product_1 img").first
     image_link = element["src"]
 
-    boardgame = BoardGame.create!(name: name, image_link: image_link, ean: @barcode)
-    if boardgame && @user_id
-      Game.create!(user: User.find(@user_id), board_game: boardgame)
-    end
-    boardgame
+    { name: name, image_link: image_link, ean: @barcode }
   end
 end

@@ -16,13 +16,30 @@ class BoardGamesController < ApplicationController
     @board_game = BoardGame.new
   end
 
-  def create
-    board_game = BarcodeConverter.new(board_game_params[:ean], current_user.id).convert
+  def scan
+    @board_game = BoardGame.new
 
-    if board_game.present?
-      redirect_to board_games_path, notice: "BoardGame was successfully created."
+    if params[:ean].present?
+      # Supposons que vous ayez une méthode pour récupérer les infos du jeu à partir de l'EAN
+      game_data = BarcodeConverter.new(params[:ean]).convert
+
+      if game_data
+        @board_game.name = game_data[:name]
+        @board_game.image_link = game_data[:image_link]
+        @board_game.ean = params[:ean] # On garde l'EAN entré par l'utilisateur
+      else
+        flash[:alert] = "Aucune information trouvée pour cet EAN."
+      end
+    end
+  end
+
+  def create
+    @board_game = BoardGame.new(board_game_params)
+
+    if @board_game.save
+      redirect_to @board_game, notice: "Le jeu a été enregistré avec succès !"
     else
-      render :new
+      render :scan
     end
   end
 
@@ -49,6 +66,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name, :ean)
+    params.require(:board_game).permit(:name, :ean, :image_link)
   end
 end

@@ -1,7 +1,7 @@
 <div class="app">
   <div style="display: grid;grid-template-columns: 1fr 1fr;">
     <h2>Most Popular Games</h2>
-    <h2><%= link_to 'Ajouter un jeu', new_board_game_path %></h2>
+    <h2><%= link_to 'Ajouter un jeu', board_games_scan_board_games_path %></h2>
   </div>
   <section class="board_games">
     <% @board_games.each do |board_game| %>
