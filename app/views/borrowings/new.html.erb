@@ -1,0 +1,23 @@
+<%= simple_form_for([@game, @borrowing]) do |f| %>
+  <div class="form-group">
+<%= f.input :start_date, as: :string, input_html: { type: 'datetime-local' }, label: "Date de début" %>
+  </div>
+
+  <div class="form-group">
+<%= f.input :end_date, as: :string, input_html: { type: 'datetime-local' }, label: "Date de fin" %>
+  </div>
+
+  <div class="form-group">
+    <p>Utilisateur : <%= @game.user.pseudo %></p>
+    <%= f.input :user_id, as: :hidden, input_html: { value: @game.user.id } %>
+  </div>
+
+  <div class="form-group">
+    <p>Jeu : <%= @game.board_game.name %></p>
+    <%= f.association :game, as: :hidden, input_html: { value: @game.id } %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+  </div>
+<% end %>

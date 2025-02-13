@@ -1,19 +1,24 @@
 class BorrowingsController < ApplicationController
   def create
-    @board_game = BoardGame.find(params[:board_game_id])
-    @booking = Borrowing.new(booking_params)
-    @booking.board_game = @board_game
-    @booking.user = current_user
-    if @booking.save
-      redirect_to @board_game
+    @borrowing = Borrowing.new(booking_params)
+    @borrowing.game = Game.find(booking_params[:game_id])
+    @borrowing.user = current_user || User.find(booking_params[:user_id])
+    if @borrowing.save
+      @borrowing.game.update(borrowable: false)
+      redirect_to @borrowing.game.board_game
     else
       render "board_game/show"
     end
   end
 
+  def new
+    @game = Game.find(params[:game_id])
+    @borrowing = Borrowing.new(game: @game)
+  end
+
   private
 
   def booking_params
-    params.require(:booking).permit(:date)
+    params.require(:borrowing).permit(:start_date, :end_date, :user_id, :game_id)
   end
 end
