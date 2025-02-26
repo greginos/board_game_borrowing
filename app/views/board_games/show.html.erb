@@ -5,18 +5,23 @@
         <div class="search"><svg><use xlink:href="#ico-search"></use></svg></div>
     </header>
     <div class="detail">
-        <svg class="close">
-            <use xlink:href="#close"></use>
-        </svg>
         <div class="board_game">
             <img src=<%= @board_game.image_link %> alt="" class="poster" />
-            <div class="title">@board_game.name</div>
+            <div class="title"><%=@board_game.name %></div>
             <div class="info">
-                <span class="length">117 min</span>
-                <span class="year">2015</span>
+                <span class="length">Code barre : <%= @board_game.ean %></span>
+            </div>
+            <div class="info">
+                <span class="year">Nombre de joueurs : <%= @board_game.min_players%>-<%= @board_game.max_players%> </span> 
+            </div>
+            <div class="info">
+                <span class="year">A partir de : <%= @board_game.minimum_age %> ans </span> 
+            </div>
+            <div class="info">
+                <span class="year">Durée : <%= @board_game.length %></span> 
             </div>
             <div class="desc">
-                Jack is a young boy of 5 years old who has lived all his life in one room. He believes everything within it are the only real things in the world. But what will happen when his Ma suddenly tells him that there are other things outside of Room?
+                <%= @board_game.description %>    
             </div>
 
             <button class="play">

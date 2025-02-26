@@ -18,9 +18,9 @@ body {
 
 @mixin center {
   position: relative;
-  top: 50%;
+  top: 10%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
 }
 
 
@@ -30,7 +30,6 @@ App
 .app {
   @include center;
   width: 640px;
-  height: 390px;
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 5px 30px rgba(0, 0, 0, .2);
@@ -115,9 +114,11 @@ Board games
 .board_games {
   display: flex;
   padding: 8px 18px;
+  flex-wrap: wrap;
 
   .board_game {
     padding: 10px;
+    flex: 1 1 150px;
     cursor: pointer;
 
     .poster {
@@ -164,7 +165,7 @@ Detail
 
 
   .poster {
-    position: absolute;
+    // position: absolute;
     z-index: 2;
     top: -10%;
     left: -6%;
