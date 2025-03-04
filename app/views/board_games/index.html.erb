@@ -1,23 +1,46 @@
 <div class="app">
+    <header>
+        <%= link_to board_games_path do %>
+            <h1> Jeux à em'<strong>portet</strong></h1>
+        <% end %>
+        <nav></nav>
+        <div class="search"><svg><use xlink:href="#ico-search"></use></svg></div>
+    </header>
   <div style="display: grid;grid-template-columns: 1fr 1fr;">
     <h2>Most Popular Games</h2>
     <h2><%= link_to 'Ajouter un jeu', board_games_scan_board_games_path %></h2>
+    <div class="row justify-content-center">
+      <div class="col-sm-8 my-3">
+        <%= form_with url: board_games_path, method: :get, class: "d-flex" do %>
+          <%= text_field_tag :query,
+                params[:query],
+                class: "form-control",
+                placeholder: "Type a keyword"
+            %>
+          <%= submit_tag "Search", name: "", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
   </div>
-  <section class="board_games">
-    <% @board_games.each do |board_game| %>
-      <%= link_to board_game_path(board_game.id) do %>
-          <div class="board_game">
-          <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
-          <div class="title"><%=board_game.name %></div>
-          <div class="info">
-              <span class="length">117 min</span>
-              <span class="year">2015</span>
-          </div>
-          <div class="desc">Description du jeu</div>
-          </div>
+  <% if @board_games.any? %>
+    <section class="board_games">
+      <% @board_games.each do |board_game| %>
+        <%= link_to board_game_path(board_game.id) do %>
+            <div class="board_game">
+            <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
+            <div class="title"><%=board_game.name %></div>
+            <div class="info">
+                <span class="length">117 min</span>
+                <span class="year">2015</span>
+            </div>
+            <div class="desc">Description du jeu</div>
+            </div>
+        <% end %>
       <% end %>
+    </section>
+    <% else %>
+      <em>Sorry, no games found.</em>
     <% end %>
-  </section>
 </div>
 
 <!-- Icons -->

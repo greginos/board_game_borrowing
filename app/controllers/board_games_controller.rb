@@ -3,6 +3,9 @@ class BoardGamesController < ApplicationController
 
   def index
     @board_games = BoardGame.all
+    if params["query"].present?
+      @board_games = @board_games.where("name ILIKE ?", "%#{params[:query]}%")
+    end
     respond_to do |format|
       format.html # Standard HTML response
       format.turbo_stream # Turbo Stream response for dynamic updates
