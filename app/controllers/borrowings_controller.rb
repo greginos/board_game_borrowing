@@ -12,8 +12,9 @@ class BorrowingsController < ApplicationController
   end
 
   def new
-    @game = Game.find(params[:game_id])
-    @borrowing = Borrowing.new(game: @game)
+    game = Game.find(params[:game_id])
+    @borrowing = Borrowing.new(game: game)
+    @board_game = @borrowing.game.board_game
   end
 
   private
