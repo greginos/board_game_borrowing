@@ -7,4 +7,8 @@ class User < ApplicationRecord
   has_many :borrowings
   has_many :games
   has_many :board_games, through: :games
+
+  def loaned_games
+    Borrowing.joins(:game).where(games: { user_id: id })
+  end
 end
