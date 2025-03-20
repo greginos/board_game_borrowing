@@ -91,3 +91,24 @@ Visit `http://localhost:3000` to see the application.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## À venir
+
+Les fonctionnalités suivantes sont prévues pour les prochaines versions :
+
+- **Responsive Design**
+  - Adaptation du site pour mobile et tablette
+  - Optimisation de la mise en page pour différentes tailles d'écran
+
+- **Scan de Code-barres**
+  - Implémentation du scan de code-barres pour l'ajout de jeux
+  - Remplacement de la saisie manuelle de l'EAN par un scan
+
+- **Gestion des Prêts**
+  - Possibilité d'accepter ou refuser une demande de prêt
+  - Système de notification pour les demandes de prêt
+
+- **Messagerie**
+  - Système de messagerie entre utilisateurs
+  - Échange de messages pendant la durée d'un prêt
+  - Notifications pour les nouveaux messages
