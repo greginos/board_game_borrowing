@@ -23,46 +23,18 @@
                     <div class="friendship-actions">
                         <% if user_signed_in? && current_user != @user %>
                             <% friendship = current_user.friendship_with(@user) %>
-                            <% puts "DEBUG: current_user.id = #{current_user.id}" %>
-                            <% puts "DEBUG: @user.id = #{@user.id}" %>
-                            <% puts "DEBUG: friendship = #{friendship.inspect}" %>
                             <% if friendship %>
                                 <% if friendship.accepted? %>
                                     <p class="text-success">Vous êtes amis</p>
                                     <%= button_to "Retirer l'amitié", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
                                 <% elsif friendship.pending? %>
-                                    <% puts "DEBUG: friendship.user_id = #{friendship.user_id}" %>
-                                    <% puts "DEBUG: friendship.friend_id = #{friendship.friend_id}" %>
                                     <% if friendship.user == current_user %>
                                         <p class="text-warning">Demande d'amitié envoyée</p>
                                         <%= button_to "Annuler la demande", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
-                                    <% else %>
-                                        <p class="text-warning">Demande d'amitié reçue</p>
-                                        <div class="friendship-actions">
-                                            <%= button_to "Accepter", friendship_path(friendship, status: 'accepted'), method: :patch, class: "btn btn-success" %>
-                                            <%= button_to "Refuser", friendship_path(friendship, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
-                                        </div>
                                     <% end %>
                                 <% end %>
                             <% else %>
                                 <%= button_to "Ajouter en ami", user_friendships_path(current_user, friend_id: @user.id), class: "btn btn-primary" %>
-                            <% end %>
-                        <% end %>
-
-                        <% if user_signed_in? && current_user == @user %>
-                            <% if current_user.pending_inverse_friendships.any? %>
-                                <div class="mt-4">
-                                    <h3>Demandes d'amitié reçues</h3>
-                                    <% current_user.pending_inverse_friendships.each do |friendship| %>
-                                        <div class="friendship-request">
-                                            <p><%= link_to friendship.user.pseudo, user_path(friendship.user) %> souhaite devenir votre ami</p>
-                                            <div class="friendship-actions">
-                                                <%= button_to "Accepter", friendship_path(friendship, status: 'accepted'), method: :patch, class: "btn btn-success" %>
-                                                <%= button_to "Refuser", friendship_path(friendship, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
-                                            </div>
-                                        </div>
-                                    <% end %>
-                                </div>
                             <% end %>
                         <% end %>
                     </div>
