@@ -1,0 +1,66 @@
+fr:
+  activerecord:
+    models:
+      user: "utilisateur"
+      game: "jeu"
+      borrowing: "emprunt"
+      friendship: "amitié"
+    attributes:
+      user:
+        email: "email"
+        password: "mot de passe"
+        pseudo: "pseudo"
+      game:
+        name: "nom"
+        description: "description"
+        borrowable: "empruntable"
+      borrowing:
+        start_date: "date de début"
+        end_date: "date de fin"
+      friendship:
+        status: "statut"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "ne peut pas être vide"
+              invalid: "n'est pas valide"
+              taken: "a déjà été pris"
+            password:
+              blank: "ne peut pas être vide"
+              too_short: "est trop court (minimum %{count} caractères)"
+            pseudo:
+              blank: "ne peut pas être vide"
+              taken: "a déjà été pris"
+        game:
+          attributes:
+            name:
+              blank: "ne peut pas être vide"
+            description:
+              blank: "ne peut pas être vide"
+        borrowing:
+          attributes:
+            start_date:
+              blank: "ne peut pas être vide"
+            end_date:
+              blank: "ne peut pas être vide"
+        friendship:
+          attributes:
+            status:
+              blank: "ne peut pas être vide"
+              inclusion: "n'est pas inclus dans la liste"
+            user:
+              blank: "doit exister"
+            friend:
+              blank: "doit exister"
+            user_id:
+              taken: "a déjà été pris"
+          base:
+            taken: "cette amitié existe déjà"
+      messages:
+        taken: "a déjà été pris"
+        blank: "ne peut pas être vide"
+        invalid: "n'est pas valide"
+        too_short: "est trop court (minimum %{count} caractères)"
+        inclusion: "n'est pas inclus dans la liste" 

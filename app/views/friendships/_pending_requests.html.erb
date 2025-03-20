@@ -1,0 +1,25 @@
+<% if current_user.pending_inverse_friendships.any? || current_user.pending_friendships.any? %>
+  <div class="pending-friendships">
+    <% if current_user.pending_inverse_friendships.any? %>
+      <h3>Demandes d'amitié reçues</h3>
+      <% current_user.pending_inverse_friendships.each do |friendship| %>
+        <div class="friendship-request">
+          <p><%= link_to friendship.user.pseudo, user_path(friendship.user) %> souhaite devenir votre ami</p>
+          <div class="friendship-actions">
+            <%= button_to "Accepter", friendship_path(friendship, status: 'accepted'), method: :patch, class: "btn btn-success" %>
+            <%= button_to "Refuser", friendship_path(friendship, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% if current_user.pending_friendships.any? %>
+      <h3>Demandes d'amitié envoyées</h3>
+      <% current_user.pending_friendships.each do |friendship| %>
+        <div class="friendship-request">
+          <p>Demande envoyée à <%= link_to friendship.friend.pseudo, user_path(friendship.friend) %></p>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %> 

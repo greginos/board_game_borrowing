@@ -1,11 +1,4 @@
 <div class="app">
-    <header>
-        <%= link_to board_games_path do %>
-            <h1> Jeux à em'<strong>portet</strong></h1>
-        <% end %>
-        <nav></nav>
-        <div class="search"><svg><use xlink:href="#ico-search"></use></svg></div>
-    </header>
     <div class="detail">
         <div class="board_game">
             <img src=<%= @board_game.image_link %> alt="" class="poster" />

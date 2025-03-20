@@ -1,126 +1,148 @@
 <div class='grid_user'>
     <div class='left_panel'>
         <div class="center">
-            <div class="card">
+            <div class="card profile-card">
                 <div class="additional">
                     <div class="user-card">
-                        <div class="level center">
-                        Level 13
-                        </div>
-                        <div class="points center">
-                        5,312 Points
-                        </div>
                         <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar", alt: "dropdown menu" %>
+                            <%= image_tag @user.avatar_url, class: "avatar", alt: "avatar" %>
                         </a>
                         <title id="title">Profile</title>
                     </div>
-                    <div class="more-info">
-                        <h1><%= @user.pseudo %></h1>
-                        <div class="coords">
-                            <span>Group Name</span>
-                            <span>Joined January 2019</span>
-                        </div>
-                        <div class="coords">
-                            <span>Position/Role</span>
-                            <span>City, Country</span>
-                        </div>
-                        <div class="stats">
-                            <div>
-                                <div class="title">Awards</div>
-                                <i class="fa fa-trophy"></i>
-                                <div class="value">2</div>
-                            </div>
-                            <div>
-                                <div class="title">Matches</div>
-                                <i class="fa fa-gamepad"></i>
-                                <div class="value">27</div>
-                            </div>
-                            <div>
-                                <div class="title">Pals</div>
-                                <i class="fa fa-group"></i>
-                                <div class="value">123</div>
-                            </div>
-                            <div>
-                                <div class="title">Coffee</div>
-                                <i class="fa fa-coffee"></i>
-                                <div class="value infinity">∞</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="general">
-                    <h1><%= @user.pseudo %></h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a volutpat mauris, at molestie lacus. Nam vestibulum sodales odio ut pulvinar.</p>
+                    <h1>
+                        <%= @user.pseudo %>
+                        <% if user_signed_in? && current_user == @user %>
+                            <%= link_to edit_user_path(@user), class: "btn btn-sm btn-outline-primary ms-2" do %>
+                                <i class="fas fa-edit"></i> Modifier
+                            <% end %>
+                        <% end %>
+                    </h1>
+                    <p><%= @user.description.presence || "Aucune description pour le moment." %></p>
+                    <div class="friendship-actions">
+                        <% if user_signed_in? && current_user != @user %>
+                            <% friendship = current_user.friendship_with(@user) %>
+                            <% puts "DEBUG: current_user.id = #{current_user.id}" %>
+                            <% puts "DEBUG: @user.id = #{@user.id}" %>
+                            <% puts "DEBUG: friendship = #{friendship.inspect}" %>
+                            <% if friendship %>
+                                <% if friendship.accepted? %>
+                                    <p class="text-success">Vous êtes amis</p>
+                                    <%= button_to "Retirer l'amitié", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
+                                <% elsif friendship.pending? %>
+                                    <% puts "DEBUG: friendship.user_id = #{friendship.user_id}" %>
+                                    <% puts "DEBUG: friendship.friend_id = #{friendship.friend_id}" %>
+                                    <% if friendship.user == current_user %>
+                                        <p class="text-warning">Demande d'amitié envoyée</p>
+                                        <%= button_to "Annuler la demande", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
+                                    <% else %>
+                                        <p class="text-warning">Demande d'amitié reçue</p>
+                                        <div class="friendship-actions">
+                                            <%= button_to "Accepter", friendship_path(friendship, status: 'accepted'), method: :patch, class: "btn btn-success" %>
+                                            <%= button_to "Refuser", friendship_path(friendship, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
+                                        </div>
+                                    <% end %>
+                                <% end %>
+                            <% else %>
+                                <%= button_to "Ajouter en ami", user_friendships_path(current_user, friend_id: @user.id), class: "btn btn-primary" %>
+                            <% end %>
+                        <% end %>
+
+                        <% if user_signed_in? && current_user == @user %>
+                            <% if current_user.pending_inverse_friendships.any? %>
+                                <div class="mt-4">
+                                    <h3>Demandes d'amitié reçues</h3>
+                                    <% current_user.pending_inverse_friendships.each do |friendship| %>
+                                        <div class="friendship-request">
+                                            <p><%= link_to friendship.user.pseudo, user_path(friendship.user) %> souhaite devenir votre ami</p>
+                                            <div class="friendship-actions">
+                                                <%= button_to "Accepter", friendship_path(friendship, status: 'accepted'), method: :patch, class: "btn btn-success" %>
+                                                <%= button_to "Refuser", friendship_path(friendship, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
+                                            </div>
+                                        </div>
+                                    <% end %>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class='card' style='overflow:auto'>
-            <div class="borrowings">
-                <h2>Emprunts en cours</h2>
-                <table style="width: 100%;">
-                    <thead>
-                        <tr>
-                        <th></th>
-                        <th>Jeu</th>
-                        <th>Date d'emprunt</th>
-                        <th>Date de retour</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @user.borrowings.each do |borrowing| %>
-                        <tr>
-                            <td><%=image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;")%></td>
-                            <td><%= borrowing.game.board_game.name %></td>
-                            <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
-                            <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                    </table>
-            </div>  
-        </div>
-        <div class='card'>
-            <div class="borrowings">
-                <h2>Jeux prêtés</h2>
-                <table style="width: 100%;">
-                    <thead>
-                        <tr>
-                        <th></th>
-                        <th>Jeu</th>
-                        <th>Date d'emprunt</th>
-                        <th>Date de retour</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @user.loaned_games.each do |borrowing| %>
-                        <tr>
-                            <td><%=image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;")%></td>
-                            <td><%= borrowing.game.board_game.name %></td>
-                            <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
-                            <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                    </table>
-            </div>   
-        </div>
+        <%= render 'friendships/pending_requests' if user_signed_in? && current_user == @user %>
+        
+        <% if user_signed_in? && current_user == @user %>
+            <div class='card'>
+                <div class="borrowings" data-controller="borrowings">
+                    <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Emprunts en cours</h2>
+                    <div class="borrowings-content" data-borrowings-target="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Jeu</th>
+                                    <th>Date d'emprunt</th>
+                                    <th>Date de retour</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% @user.borrowings.each do |borrowing| %>
+                                    <tr>
+                                        <td><%= image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;") %></td>
+                                        <td><%= borrowing.game.board_game.name %></td>
+                                        <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                        <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class='card'>
+                <div class="borrowings" data-controller="borrowings">
+                    <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Jeux prêtés</h2>
+                    <div class="borrowings-content" data-borrowings-target="content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Jeu</th>
+                                    <th>Date d'emprunt</th>
+                                    <th>Date de retour</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% @user.loaned_games.each do |borrowing| %>
+                                    <tr>
+                                        <td><%= image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;") %></td>
+                                        <td><%= borrowing.game.board_game.name %></td>
+                                        <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                        <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <% end %>
     </div>
     <div class='user_games'>
         <section class="board_games">
-        <% @user.board_games.each do |board_game| %>
-            <%= link_to board_game_path(board_game.id) do %>
-                <div class="board_game">
-                <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
-                <div class="title"><%=board_game.name %></div>
-                <div class="info">
-                    <span class="length">117 min</span>
-                    <span class="year">2015</span>
-                </div>
-                <div class="desc">Description du jeu</div>
-                </div>
+            <% @user.board_games.each do |board_game| %>
+                <%= link_to board_game_path(board_game.id) do %>
+                    <div class="board_game">
+                        <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
+                        <div class="title"><%=board_game.name %></div>
+                        <div class="info">
+                            <span class="length">117 min</span>
+                            <span class="year">2015</span>
+                        </div>
+                        <div class="desc">Description du jeu</div>
+                    </div>
+                <% end %>
             <% end %>
-        <% end %>
         </section>
     </div>
 </div>
