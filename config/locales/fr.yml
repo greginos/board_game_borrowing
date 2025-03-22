@@ -64,3 +64,6 @@ fr:
         invalid: "n'est pas valide"
         too_short: "est trop court (minimum %{count} caractères)"
         inclusion: "n'est pas inclus dans la liste" 
+        record_invalid: "Validation échouée : %{errors}"
+        not_self_friendship: "ne peut pas être le même que l'utilisateur"
+        not_duplicate_friendship: "cette amitié existe déjà"

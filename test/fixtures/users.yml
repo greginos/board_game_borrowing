@@ -1,0 +1,17 @@
+one:
+  email: user1@example.com
+  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  pseudo: UserOne
+  description: Premier utilisateur de test
+
+two:
+  email: user2@example.com
+  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  pseudo: UserTwo
+  description: Deuxième utilisateur de test
+
+three:
+  email: user3@example.com
+  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+  pseudo: UserThree
+  description: Troisième utilisateur de test 

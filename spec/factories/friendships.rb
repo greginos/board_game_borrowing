@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :friendship do
-    user
-    friend { create(:user) }
-    status { "pending" }
+    association :user, factory: :user
+    association :friend, factory: :user
+    status { :pending }
 
     trait :accepted do
       status { "accepted" }

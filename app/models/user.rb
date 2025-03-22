@@ -56,15 +56,15 @@ class User < ApplicationRecord
 
   def friend?(friend)
     friendship = friendship_with(friend)
-    friendship&.accepted?
+    return false unless friendship
+
+    friendship.accepted?
   end
 
   def friendship_with(friend)
-    # Chercher d'abord dans les amitiés directes
     direct = friendships.find_by(friend: friend)
     return direct if direct
 
-    # Si pas trouvé, chercher dans les amitiés inverses
     inverse = inverse_friendships.find_by(friend: self)
     return inverse if inverse
 

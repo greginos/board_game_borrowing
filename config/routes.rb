@@ -4,8 +4,10 @@ Rails.application.routes.draw do
       get "scan", to: "board_games#scan", as: "board_games_scan"
       post "scan", to: "board_games#create"
     end
-    resources :borrowings, only: [ :create, :new ]
+    resources :borrowings, only: [ :create, :new, :index, :destroy, :update ]
   end
+  resources :borrowings, only: [ :show, :update, :destroy ]
+
   devise_for :users
   resources :users do
     resources :games, only: [ :index ]

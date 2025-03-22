@@ -69,17 +69,17 @@ RSpec.configure do |config|
   # Factory Bot configuration
   config.include FactoryBot::Syntax::Methods
 
-  # Database Cleaner configuration
   config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
 
   config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
   end
 
-  config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 
   # Shoulda Matchers configuration
@@ -93,11 +93,11 @@ RSpec.configure do |config|
   # Devise configuration
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Warden::Test::Helpers
-  config.before :suite do
-    Warden.test_mode!
-  end
-  config.after :each do
-    Warden.test_reset!
-  end
+  # config.include Warden::Test::Helpers
+  # config.before :suite do
+  #   Warden.test_mode!
+  # end
+  # config.after :each do
+  #   Warden.test_reset!
+  # end
 end
