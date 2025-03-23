@@ -28,7 +28,7 @@
         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <%= link_to "Mon profil", user_path(current_user), class: "dropdown-item" %>
           <%= link_to "Ajouter un jeu", board_games_scan_board_games_path, class: "dropdown-item" %>
-          <%= link_to "Déconnexion", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
+          <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, data: {turbo_method: :delete}, class: "dropdown-item" %>
         </div>
       </div>
     <% else %>

@@ -33,11 +33,11 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    if params[:id] == "me" && current_user
-      @user = current_user
-    else
-      @user = User.find(params[:id])
-    end
+      # if params[:id] == "me" && current_user
+      #   @user = current_user
+      # else
+      @user = User.find_by(id: params[:id])
+    # end
   end
 
   def user_params

@@ -1,5 +1,21 @@
 <div class="app">
   <div class="container">
+    <div class= "search">
+      <%= form_with url: board_games_path, method: :get, local: true do |form| %>
+
+          <%= form.text_field :query, value: params[:query], placeholder: "Titre du jeu", class: 'search-input' %>
+
+          <%= form.number_field :players, value: params[:players], min: 1, placeholder: "Nombre de joueurs", class: 'search-input' %>
+
+          <%= form.number_field :age_min, value: params[:age_min], min: 0, placeholder: "Âge minimum", class: 'search-input' %>
+          
+          <button type="submit" class="search-button" aria-label="Rechercher">
+            <svg class="icon-search" width="20" height="20" viewBox="0 0 20 20">
+              <use xlink:href="#ico-search"></use>
+            </svg>
+          </button>
+      <% end %>
+    </div>
   </div>
 
   <% if @board_games.any? %>

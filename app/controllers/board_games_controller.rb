@@ -3,7 +3,17 @@ class BoardGamesController < ApplicationController
 
   def index
     @board_games = BoardGame.all
-    if params["query"].present?
+
+    if search_params["players"].present?
+      players = search_params["players"].to_i
+      @board_games = @board_games.where("min_players <= ? AND max_players >= ?", players, players)
+    end
+
+    if search_params["age_min"].present?
+      @board_games = @board_games.where("minimum_age >= ? OR minimum_age IS NULL", params["age_min"].to_i)
+    end
+
+    if search_params["query"].present?
       @board_games = @board_games.where("name ILIKE ?", "%#{params[:query]}%")
     end
     respond_to do |format|
@@ -23,13 +33,16 @@ class BoardGamesController < ApplicationController
     @board_game = BoardGame.new
 
     if params[:ean].present?
-      # Supposons que vous ayez une méthode pour récupérer les infos du jeu à partir de l'EAN
       game_data = BarcodeConverter.new(params[:ean]).convert
 
       if game_data
         @board_game.name = game_data[:name]
         @board_game.image_link = game_data[:image_link]
-        @board_game.ean = params[:ean] # On garde l'EAN entré par l'utilisateur
+        @board_game.ean = params[:ean]
+        @board_game.min_players = game_data[:min_players]
+        @board_game.max_players = game_data[:max_players]
+        @board_game.minimum_age = game_data[:minimum_age]
+        @board_game.length = game_data[:length]
       else
         flash[:alert] = "Aucune information trouvée pour cet EAN."
       end
@@ -68,7 +81,11 @@ class BoardGamesController < ApplicationController
     @board_game = BoardGame.find(params[:id])
   end
 
+  def search_params
+    params.permit(:players, :age_min, :query, :commit)
+  end
+
   def board_game_params
-    params.require(:board_game).permit(:name, :ean, :image_link)
+    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length)
   end
 end

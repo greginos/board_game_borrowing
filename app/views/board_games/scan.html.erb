@@ -2,12 +2,13 @@
     <div class="detail">
         <%= form_with url: board_games_scan_board_games_path, method: :get, local: true do %>
         <div class="field">
-            <%= label_tag :ean, "Scanner ou entrer un EAN" %>
+            <%= label_tag :ean, "Code-barres du jeu" %>
             <%= text_field_tag :ean, params[:ean] %>
             <%= submit_tag "Rechercher" %>
         </div>
         <% end %>
-        <% if @board_game.ean %>
+        
+        <% if @board_game.ean || flash[:alert] == "Aucune information trouvée pour cet EAN."%>
             <%= form_with(model: @board_game, url: board_games_scan_board_games_path, local: true) do |form| %>
             <% if @board_game.errors.any? %>
                 <div id="error_explanation">
@@ -21,12 +22,12 @@
             <% end %>
 
             <div class="field">
-                <%= form.label :ean %>
+                <%= form.label :code_barres %>
                 <%= form.text_field :ean, value: @board_game.ean, placeholder: "Saisissez ou scannez un EAN" %>
             </div>
 
             <div class="field">
-                <%= form.label :name %>
+                <%= form.label :nom_du_jeu %>
                 <%= form.text_field :name, value: @board_game.name %>
             </div>
 
@@ -36,11 +37,31 @@
                 <br>
                 <%= image_tag @board_game.image_link, alt: "Image du jeu", style: "max-width: 200px; max-height: 200px;" %>
                 <% else %>
-                <p>Aucune image disponible</p>
+                <%= form.text_field :image, placeholder: "Ajouter le lien de l'image" %>
                 <% end %>
                 <%= form.hidden_field :image_link, value: @board_game.image_link %>
             </div>
 
+            <div class="field">
+                <%= form.label :nombre_minimum_de_joueurs %>
+                <%= form.number_field :min_players, value: @board_game.min_players %>
+            </div>
+
+            <div class="field">
+                <%= form.label :nombre_maximum_de_joueurs %>
+                <%= form.number_field :max_players, value: @board_game.max_players %>
+            </div>
+            
+            <div class="field">
+                <%= form.label :age_minimum %>
+                <%= form.number_field :minimum_age, value: @board_game.minimum_age %>
+            </div>
+
+            <div class="field">
+                <%= form.label :duree_d_une_partie %>
+                <%= form.text_field :length, value: @board_game.length %>
+            </div>
+            
             <div class="actions">
                 <%= form.submit "Enregistrer le jeu" %>
             </div>
