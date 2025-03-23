@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_21_214729) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_23_211433) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_21_214729) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.bigint "game_id"
+    t.integer "status"
     t.index ["game_id"], name: "index_borrowings_on_game_id"
     t.index ["user_id"], name: "index_borrowings_on_user_id"
   end
@@ -84,6 +85,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_21_214729) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "borrowable", default: false, null: false
+    t.integer "state"
     t.index ["board_game_id"], name: "index_games_on_board_game_id"
     t.index ["user_id"], name: "index_games_on_user_id"
   end

@@ -11,9 +11,10 @@ class User < ApplicationRecord
   has_many :board_games, through: :games
   has_many :borrowings
   has_many :borrowed_games, through: :borrowings, source: :game
-  has_many :friendships
-  has_many :friends, through: :friendships
-  has_many :inverse_friendships, class_name: "Friendship"
+  has_many :friendships, foreign_key: :user_id, class_name: "Friendship"
+  has_many :friends, through: :friendships, source: :friend
+
+  has_many :inverse_friendships, foreign_key: :friend_id, class_name: "Friendship"
   has_many :inverse_friends, through: :inverse_friendships, source: :user
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -75,10 +76,6 @@ class User < ApplicationRecord
     friendship_with(friend).present?
   end
 
-  def loaned_games
-    Borrowing.joins(:game).where(games: { user_id: id })
-  end
-
   def all_friends
     (friends + inverse_friends).uniq
   end
@@ -89,5 +86,9 @@ class User < ApplicationRecord
 
   def pending_inverse_friendships
     Friendship.where(friend: self, status: "pending")
+  end
+
+  def loaned_games
+    Borrowing.joins(:game).where(games: { user_id: id })
   end
 end

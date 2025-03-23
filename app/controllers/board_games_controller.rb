@@ -50,9 +50,12 @@ class BoardGamesController < ApplicationController
   end
 
   def create
-    @board_game = BoardGame.new(board_game_params)
+    filtered_params = board_game_params
+    game_state = filtered_params.delete("game_state")
+    @board_game = BoardGame.new(filtered_params)
 
     if @board_game.save
+      Game.create(board_game: @board_game, user: current_user, state: Game::STATUS[game_state])
       redirect_to @board_game, notice: "Le jeu a été enregistré avec succès !"
     else
       render :scan
@@ -86,6 +89,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length)
+    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state)
   end
 end

@@ -62,6 +62,12 @@
                 <%= form.text_field :length, value: @board_game.length %>
             </div>
             
+
+            <div class="field">
+                <%= form.label :etat_du_jeu %>
+                <%= form.select :game_state, ["Neuf", "Très bon état", "Bon état", "Correct", "Médiocre"] %>
+            </div>
+
             <div class="actions">
                 <%= form.submit "Enregistrer le jeu" %>
             </div>
