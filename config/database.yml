@@ -15,6 +15,4 @@ test:
 
 production:
   <<: *default
-  database: board_game_borrowing_production
-  username: board_game_borrowing
-  password: your_password
+  url: <%= ENV['DATABASE_URL'] %>
