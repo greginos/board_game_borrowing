@@ -21,13 +21,22 @@ class UsersController < ApplicationController
   end
 
   def index
-    user = User.find(params[:user_id])
+    @users = User.all
+    if params[:pseudo].present?
+      @users = @users.where("unaccent(pseudo) ILIKE unaccent(?)", "%#{params[:pseudo]}%")
+    end
+    if params[:email].present?
+      @users = @users.where("email ILIKE ?", "%#{params[:email]}%")
+    end
+    @users = @users.first(10)
 
-    @games = user.games
     respond_to do |format|
       format.html
-      format.json { render json: @games }
+      format.json { render json: @users }
     end
+  end
+
+  def search_form
   end
 
   private

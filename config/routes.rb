@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :borrowings, only: [ :create, :new, :index, :destroy, :update ]
   end
   resources :borrowings, only: [ :show, :update, :destroy ]
+  get "/users/search_form", to: "users#search_form", as: "search_form_users"
 
   devise_for :users
   resources :users do

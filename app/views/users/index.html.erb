@@ -1,0 +1,46 @@
+<div class='grid_user'>
+    <% @users.each do |user| %>
+        <div class='left_panel'>
+            <div class="center">
+                <div class="card profile-card">
+                    <div class="additional">
+                        <div class="user-card">
+                            <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <%= image_tag user.avatar_url, class: "avatar", alt: "avatar" %>
+                            </a>
+                            <title id="title">Profile</title>
+                        </div>
+                    </div>
+                    <div class="general">
+                        <h1>
+                            <%= user.pseudo %>
+                            <% if user_signed_in? && current_user == user %>
+                                <%= link_to edit_user_path(user), class: "btn btn-sm btn-outline-primary ms-2" do %>
+                                    <i class="fas fa-edit"></i> Modifier
+                                <% end %>
+                            <% end %>
+                        </h1>
+                    <p><%= user.description.presence || "Aucune description pour le moment." %></p>
+                    <div class="friendship-actions">
+                        <% if user_signed_in? && current_user != user %>
+                            <% friendship = current_user.friendship_with(user) %>
+                            <% if friendship %>
+                                <% if friendship.accepted? %>
+                                    <p class="text-success">Vous êtes amis</p>
+                                    <%= button_to "Retirer l'amitié", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
+                                <% elsif friendship.pending? %>
+                                    <% if friendship.user == current_user %>
+                                        <p class="text-warning">Demande d'amitié envoyée</p>
+                                        <%= button_to "Annuler la demande", friendship_path(friendship), method: :delete, class: "btn btn-danger" %>
+                                    <% end %>
+                                <% end %>
+                            <% else %>
+                                <%= button_to "Ajouter en ami", user_friendships_path(current_user, friend_id: @user.id), class: "btn btn-primary" %>
+                            <% end %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% end %>
+</div>
