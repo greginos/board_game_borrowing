@@ -34,6 +34,9 @@ class BoardGamesController < ApplicationController
 
     if params[:ean].present?
       game_data = BarcodeConverter.new(params[:ean]).convert
+      if game_data.nil?
+        game_data = BarcodeConverterToyStore.new(params[:ean]).convert
+      end
 
       if game_data
         @board_game.name = game_data[:name]
@@ -43,6 +46,7 @@ class BoardGamesController < ApplicationController
         @board_game.max_players = game_data[:max_players]
         @board_game.minimum_age = game_data[:minimum_age]
         @board_game.length = game_data[:length]
+        @board_game.description = game_data[:description]
       else
         flash[:alert] = "Aucune information trouvée pour cet EAN."
       end
@@ -89,6 +93,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state)
+    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state, :description)
   end
 end
