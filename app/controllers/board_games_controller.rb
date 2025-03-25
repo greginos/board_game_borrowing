@@ -60,7 +60,11 @@ class BoardGamesController < ApplicationController
 
     if @board_game.save
       Game.create(board_game: @board_game, user: current_user, state: Game::STATUS[game_state])
-      redirect_to @board_game, notice: "Le jeu a été enregistré avec succès !"
+      if params[:add_another]
+        redirect_to scan_board_games_path, notice: "Jeu créé avec succès ! Ajoutez-en un autre."
+      else
+        redirect_to @game, notice: "Le jeu a été créé avec succès !"
+      end
     else
       render :scan
     end
