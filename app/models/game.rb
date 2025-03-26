@@ -5,6 +5,10 @@ class Game < ApplicationRecord
 
   enum :state, { new: 0, very_good: 1, good: 2, average: 3, used: 4 }, suffix: true
   scope :borrowable, -> { where(borrowable: true) }
+  scope :from_friends, ->(user) {
+    joins("INNER JOIN friendships ON (friendships.user_id = games.user_id AND friendships.friend_id = #{user.id}) OR (friendships.friend_id = games.user_id AND friendships.user_id = #{user.id})")
+    .where(friendships: { status: :accepted })
+  }
 
   STATUS = {
     "Neuf" => :new,

@@ -11,6 +11,22 @@ class BarcodeConverter
     get_game_infos
   end
 
+  def update_board_game(board_game)
+     game_data = get_game_infos(@barcode)
+     if game_data.nil?
+       game_data = get_game_infos(board_game.name)
+     end
+     board_game.name = game_data[:name]
+     board_game.image_link = game_data[:image_link]
+     board_game.ean = @barcode
+     board_game.min_players = game_data[:min_players]
+     board_game.max_players = game_data[:max_players]
+     board_game.minimum_age = game_data[:minimum_age]
+     board_game.length = game_data[:length]
+     board_game.description = game_data[:description]
+     board_game.save
+  end
+
   def fill_image
     board_game = BoardGame.find_by(ean: @barcode)
     values = get_game_infos(@barcode)

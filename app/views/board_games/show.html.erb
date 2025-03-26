@@ -1,11 +1,12 @@
 <div class="app">
-    <div class="detail">
-        <div class="board_game">
+    <div class="board_game">
+        <div class="poster">
             <img src=<%= @board_game.image_link %> alt="" class="poster" />
+        </div>
+        <div class="info-container">
             <div class="title"><%=@board_game.name %></div>
             <div class="info">
                 <span class="length">Code barre : <%= @board_game.ean %></span>
-            </div>
             <div class="info">
                 <span class="year">Nombre de joueurs : <%= @board_game.min_players%>-<%= @board_game.max_players%> </span> 
             </div>
@@ -15,11 +16,23 @@
             <div class="info">
                 <span class="year">Durée : <%= @board_game.length %></span> 
             </div>
-            <div class="desc">
-                <%= @board_game.description %>    
-            </div>
-            <% @board_game.games.borrowable.each do |game|%>
-                <%=  button_to "Emprunter ce jeu à ... #{game.user.pseudo}",new_board_game_borrowing_path(@board_game), method: :get, params: {game_id: game.id} %>
+        </div>
+        <div class="desc">
+            <%= @board_game.description %>    
+        </div>
+        <div class="borrowers">
+            <% if @board_game.games.borrowable.from_friends(current_user).any? %>
+                <h3>Emprunter ce jeu à :</h3>
+                <% @board_game.games.borrowable.from_friends(current_user).each do |game| %>
+                <%= link_to new_board_game_borrowing_path(@board_game, game_id: game.id), class: "text-decoration-none" do %>
+                    <div class="user-card">
+                        <%= image_tag game.user.avatar_url, class: "avatar", alt: "avatar", style: "width: 50px; height: 50px;" %>
+                        <span class="ms-2"><%= game.user.pseudo %></span>
+                    </div>
+                    <% end %>
+                <% end %>
+            <% else %>
+                <h5>Aucun ami n'a ce jeu à vous prêter</h5>
             <% end %>
         </div>
     </div>
