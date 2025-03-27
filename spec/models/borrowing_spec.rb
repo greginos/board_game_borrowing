@@ -16,7 +16,7 @@ RSpec.describe Borrowing, type: :model do
 
     it 'validates that end_date is after start_date' do
       expect(borrowing).not_to be_valid
-      expect(borrowing.errors[:end_date]).to include("doit être postérieure à la date de début")
+      expect(borrowing.errors[:end_date]).to include("doit être après la date de début")
     end
 
     it 'is valid when end_date is after start_date' do
