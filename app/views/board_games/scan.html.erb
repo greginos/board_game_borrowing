@@ -1,82 +1,88 @@
 <div class="app">
-    <div class="detail">
-        <%= form_with url: board_games_scan_board_games_path, method: :get, local: true do %>
-        <div class="field">
-            <%= label_tag :ean, "Code-barres du jeu" %>
-            <%= text_field_tag :ean, params[:ean] %>
-            <%= submit_tag "Rechercher" %>
-        </div>
-        <% end %>
-        
-        <% if @board_game.ean || flash[:alert] == "Aucune information trouvée pour cet EAN."%>
-            <%= form_with(model: @board_game, url: board_games_scan_board_games_path, local: true) do |form| %>
-            <% if @board_game.errors.any? %>
-                <div id="error_explanation">
-                <h2><%= pluralize(@board_game.errors.count, "error") %> erreurs empêchent l'enregistrement :</h2>
-                <ul>
-                    <% @board_game.errors.full_messages.each do |message| %>
-                    <li><%= message %></li>
-                    <% end %>
-                </ul>
+    <div class="container mt-4">
+        <% unless (@board_game || @game_list.present?) %>
+            <%= form_with url: board_games_scan_board_games_path, method: :get, local: true, class: "mb-3" do %>
+                <div class="mb-3">
+                    <%= label_tag :ean, "Code-barres du jeu", class: "form-label" %>
+                    <%= text_field_tag :ean, params[:ean], class: "form-control" %>
+                    <%= submit_tag "Rechercher", class: "btn btn-primary" %>
                 </div>
             <% end %>
+        <% end %>
 
-            <div class="field">
-                <%= form.label :code_barres %>
-                <%= form.text_field :ean, value: @board_game.ean, placeholder: "Saisissez ou scannez un EAN" %>
-            </div>
+        <% if @game_list.present? %>
+            <%= render "board_games/game_list" %>
+        <% end %>
 
-            <div class="field">
-                <%= form.label :nom_du_jeu %>
-                <%= form.text_field :name, value: @board_game.name %>
-            </div>
-
-            <div class="field">
-                <%= form.label :image %>
-                <% if @board_game.image_link.present? %>
-                <br>
-                <%= image_tag @board_game.image_link, alt: "Image du jeu", style: "max-width: 200px; max-height: 200px;" %>
-                <% else %>
-                <%= form.text_field :image, placeholder: "Ajouter le lien de l'image" %>
+        <% if @board_game.ean || flash[:alert] == "Aucune information trouvée pour cet EAN."%>
+            <%= form_with(model: @board_game, url: board_games_scan_board_games_path, local: true, class: "mb-3") do |form| %>
+                <% if @board_game.errors.any? %>
+                    <div class="alert alert-danger">
+                        <h2><%= pluralize(@board_game.errors.count, "error") %> erreurs empêchent l'enregistrement :</h2>
+                        <ul>
+                            <% @board_game.errors.full_messages.each do |message| %>
+                                <li><%= message %></li>
+                            <% end %>
+                        </ul>
+                    </div>
                 <% end %>
-                <%= form.hidden_field :image_link, value: @board_game.image_link %>
-            </div>
 
-            <div class="field">
-                <%= form.label :nombre_minimum_de_joueurs %>
-                <%= form.number_field :min_players, value: @board_game.min_players %>
-            </div>
+                <div class="mb-3">
+                    <%= form.label :nom_du_jeu, class: "form-label" %>
+                    <%= form.text_field :name, value: @board_game.name, class: "form-control" %>
+                </div>
 
-            <div class="field">
-                <%= form.label :nombre_maximum_de_joueurs %>
-                <%= form.number_field :max_players, value: @board_game.max_players %>
-            </div>
-            
-            <div class="field">
-                <%= form.label :age_minimum %>
-                <%= form.number_field :minimum_age, value: @board_game.minimum_age %>
-            </div>
+                <div class="mb-3">
+                    <%= form.label :image, class: "form-label" %>
+                    <% if @board_game.image_link.present? %>
+                        <div class="mt-2">
+                            <%= image_tag @board_game.image_link, alt: "Image du jeu", class: "img-fluid", style: "max-width: 200px; max-height: 200px;" %>
+                        </div>
+                    <% else %>
+                        <%= form.text_field :image, placeholder: "Ajouter le lien de l'image", class: "form-control" %>
+                    <% end %>
+                    <%= form.hidden_field :image_link, value: @board_game.image_link %>
+                </div>
 
-            <div class="field">
-                <%= form.label :duree_d_une_partie %>
-                <%= form.text_field :length, value: @board_game.length %>
-            </div>
+                <div class="mb-3">
+                    <%= form.label :nombre_minimum_de_joueurs, class: "form-label" %>
+                    <%= form.number_field :min_players, value: @board_game.min_players, class: "form-control" %>
+                </div>
 
-            <div class="field">
-                <%= form.label :description %>
-                <%= form.text_field :description, value: @board_game.description %>
-            </div>
-            
+                <div class="mb-3">
+                    <%= form.label :nombre_maximum_de_joueurs, class: "form-label" %>
+                    <%= form.number_field :max_players, value: @board_game.max_players, class: "form-control" %>
+                </div>
+                
+                <div class="mb-3">
+                    <%= form.label :age_minimum, class: "form-label" %>
+                    <%= form.number_field :minimum_age, value: @board_game.minimum_age, class: "form-control" %>
+                </div>
 
-            <div class="field">
-                <%= form.label :etat_du_jeu %>
-                <%= form.select :game_state, ["Neuf", "Très bon état", "Bon état", "Correct", "Médiocre"] %>
-            </div>
+                <div class="mb-3">
+                    <%= form.label :duree_d_une_partie, class: "form-label" %>
+                    <%= form.text_field :length, value: @board_game.length, class: "form-control" %>
+                </div>
 
-            <div class="actions">
-                <%= form.submit "Enregistrer le jeu" %>
-                <%= form.submit "Enregistrer et ajouter un autre", name: "add_another" %>
-            </div>
+                <div class="mb-3">
+                    <%= form.label :description, class: "form-label" %>
+                    <%= form.text_field :description, value: @board_game.description, class: "form-control" %>
+                </div>
+
+                <div class="mb-3">
+                    <%= form.label :etat_du_jeu, class: "form-label" %>
+                    <%= form.select :game_state, ["Neuf", "Très bon état", "Bon état", "Correct", "Médiocre"], {}, class: "form-select" %>
+                </div>
+
+                <div class="mb-3">
+                    <%= form.label :code_barres, class: "form-label" %>
+                    <%= form.text_field :ean, value: @board_game.ean, placeholder: "Saisissez ou scannez un EAN", class: "form-control" %>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <%= form.submit "Enregistrer le jeu", class: "btn btn-primary" %>
+                    <%= form.submit "Enregistrer et ajouter un autre", name: "add_another", class: "btn btn-secondary" %>
+                </div>
             <% end %>
         <% end %>
     </div>

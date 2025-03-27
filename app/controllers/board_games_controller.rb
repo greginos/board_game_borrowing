@@ -33,22 +33,64 @@ class BoardGamesController < ApplicationController
     @board_game = BoardGame.new
 
     if params[:ean].present?
-      game_data = BarcodeConverter.new(params[:ean]).convert
-      if game_data.nil?
-        game_data = BarcodeConverterToyStore.new(params[:ean]).convert
+      barcode_converter = BarcodeConverter.new(params[:ean])
+      game_data = barcode_converter.convert
+
+      if game_data.is_a?(Array) && game_data.size == 2
+        @game_list = []
+        game_data.each do |source_data|
+          next unless source_data && source_data[:values]
+          source_data[:values].each do |game|
+            @game_list << {
+              name: game[:name],
+              callback_url: game[:callback_url],
+              source: source_data[:origin]
+            }
+          end
+        end
+      elsif game_data.is_a?(Hash) && game_data[:values]
+        @game_list = game_data[:values].map do |game|
+          {
+            name: game[:name],
+            callback_url: game[:callback_url],
+            source: game_data[:origin]
+          }
+        end
+      else
+        # Si on a un seul résultat, on le traite directement
+        game_info = barcode_converter.convert_with_converter(game_data[:callback_url], game_data[:origin].to_sym)
+
+        if game_info
+          @game_list = nil
+          @board_game.name = game_info[:name]
+          @board_game.image_link = game_info[:image_link]
+          @board_game.ean = params[:ean]
+          @board_game.min_players = game_info[:min_players]
+          @board_game.max_players = game_info[:max_players]
+          @board_game.minimum_age = game_info[:minimum_age]
+          @board_game.length = game_info[:length]
+          @board_game.description = game_info[:description]
+        end
       end
 
-      if game_data
-        @board_game.name = game_data[:name]
-        @board_game.image_link = game_data[:image_link]
-        @board_game.ean = params[:ean]
-        @board_game.min_players = game_data[:min_players]
-        @board_game.max_players = game_data[:max_players]
-        @board_game.minimum_age = game_data[:minimum_age]
-        @board_game.length = game_data[:length]
-        @board_game.description = game_data[:description]
-      else
-        flash[:alert] = "Aucune information trouvée pour cet EAN."
+      if params[:selected_game].present?
+        # Si un jeu a été sélectionné, on récupère ses informations
+        callback_url, source = params[:selected_game].split("|")
+        converter = BarcodeConverter.new(params[:ean])
+        game_info = converter.convert_with_converter(callback_url, source.to_sym)
+
+        if game_info
+          @game_list = nil
+
+          @board_game.name = game_info[:name]
+          @board_game.image_link = game_info[:image_link]
+          @board_game.ean = params[:ean]
+          @board_game.min_players = game_info[:min_players]
+          @board_game.max_players = game_info[:max_players]
+          @board_game.minimum_age = game_info[:minimum_age]
+          @board_game.length = game_info[:length]
+          @board_game.description = game_info[:description]
+        end
       end
     end
   end
@@ -63,7 +105,7 @@ class BoardGamesController < ApplicationController
       if params[:add_another]
         redirect_to scan_board_games_path, notice: "Jeu créé avec succès ! Ajoutez-en un autre."
       else
-        redirect_to @game, notice: "Le jeu a été créé avec succès !"
+        redirect_to @board_game, notice: "Le jeu a été créé avec succès !"
       end
     else
       render :scan
@@ -97,6 +139,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state, :description)
+    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state, :description, :selected_game)
   end
 end

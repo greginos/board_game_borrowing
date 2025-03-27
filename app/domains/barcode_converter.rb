@@ -1,8 +1,8 @@
 class BarcodeConverter
   def initialize(barcode)
     @barcode = barcode
-    @toy_store = BarcodeConverterToyStore.new(@barcode)
-    @reseller = BarcodeConverterReseller.new(@barcode)
+    @toy_store = BarcodeManager::ToyStore.new(@barcode)
+    @reseller = BarcodeManager::Reseller.new(@barcode)
   end
 
   def get_list_of_found_games

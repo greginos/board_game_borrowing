@@ -1,0 +1,13 @@
+<div class="mt-4">
+  <h2>Jeux trouvés :</h2>
+  <%= form_with url: board_games_scan_board_games_path, method: :get, local: true, class: "mb-3" do |f| %>
+    <%= f.hidden_field :ean, value: params[:ean] %>
+    <div class="mb-3">
+      <%= f.select :selected_game, 
+          @game_list.map { |game| [game[:name], "#{game[:callback_url]}|#{game[:source]}"] },
+          { include_blank: "Sélectionnez un jeu" },
+          { class: "form-select" } %>
+    </div>
+    <%= f.submit "Valider", class: "btn btn-primary" %>
+  <% end %>
+</div> 
