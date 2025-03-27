@@ -10,7 +10,6 @@ class BorrowingsController < ApplicationController
 
     if can_borrow?
       if @borrowing.save
-        @borrowing.game.update(borrowable: false)
         redirect_to @borrowing.game.board_game, notice: "Demande de prêt en cours"
       else
         render "board_game/show"
@@ -45,7 +44,11 @@ class BorrowingsController < ApplicationController
   end
 
   def booking_params
-    params.require(:borrowing).permit(:start_date, :end_date, :game_id)
+    params.require(:borrowing).permit(:start_date, :end_date, :game_id, :id)
+  end
+
+  def set_borrowing
+    @borrowing = Borrowing.find(params[:id])
   end
 
   def can_borrow?

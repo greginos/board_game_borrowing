@@ -24,8 +24,14 @@
   </head>
 
   <body><%= render "shared/navbar" %>
-<%= render "shared/flashes" %>
+      <%= render "shared/flashes" %>
 
     <%= yield %>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container text-center">
+        <span class="text-muted">© <%= Time.current.year %> EmporteT. <%= link_to "Informations légales", legal_path %></span>
+      </div>
+    </footer>
   </body>
 </html>

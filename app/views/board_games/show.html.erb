@@ -21,10 +21,10 @@
             <%= @board_game.description %>    
         </div>
         <div class="borrowers">
-            <% if @board_game.games.borrowable.from_friends(current_user).any? %>
+            <% if @board_game.games.from_friends(current_user).any? %>
                 <h3>Emprunter ce jeu à :</h3>
-                <% @board_game.games.borrowable.from_friends(current_user).each do |game| %>
-                <%= link_to new_board_game_borrowing_path(@board_game, game_id: game.id), class: "text-decoration-none" do %>
+                <% @board_game.games.from_friends(current_user).each do |game| %>
+                <%= link_to new_game_borrowing_path(game.id), class: "text-decoration-none" do %>
                     <div class="user-card">
                         <%= image_tag game.user.avatar_url, class: "avatar", alt: "avatar", style: "width: 50px; height: 50px;" %>
                         <span class="ms-2"><%= game.user.pseudo %></span>

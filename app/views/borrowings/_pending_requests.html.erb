@@ -1,0 +1,28 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Emprunts en attente</h3>
+    </div>
+    <div class="card-body">
+        <% if @user.pending_borrowings_for_owner.any? %>
+            <div class="list-group">
+                <% @user.pending_borrowings_for_owner.each do |borrowing| %>
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1"><%= borrowing.game.board_game.name %></h5>
+                                <p class="mb-1">Demandé par <%= borrowing.user.pseudo %></p>
+                                <small>Le <%= borrowing.created_at.strftime("%d/%m/%Y") %></small>
+                            </div>
+                            <div class="btn-group">
+                                <%= button_to "Accepter", borrowing_path(borrowing, status: 'accepted'), method: :patch, class: "btn btn-success" %>
+                                <%= button_to "Refuser", borrowing_path(borrowing, status: 'rejected'), method: :patch, class: "btn btn-danger" %>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        <% else %>
+            <p class="text-muted">Aucun emprunt en attente</p>
+        <% end %>
+    </div>
+</div>

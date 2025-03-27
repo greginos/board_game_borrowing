@@ -1,6 +1,6 @@
 <div class="app">
     <div class="container mt-4">
-        <% unless (@board_game || @game_list.present?) %>
+        <% unless (@board_game.ean || @game_list.present?) %>
             <%= form_with url: board_games_scan_board_games_path, method: :get, local: true, class: "mb-3" do %>
                 <div class="mb-3">
                     <%= label_tag :ean, "Code-barres du jeu", class: "form-label" %>

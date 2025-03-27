@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe BorrowingsController, type: :controller do
   let(:user) { create(:user) }
   let(:board_game) { create(:board_game) }
-  let(:game) { create(:game, board_game: board_game) }
+  let(:game) { create(:game, board_game: board_game, user: create(:user)) }
   let(:valid_attributes) { { start_date: Date.current, end_date: Date.current + 1.week } }
 
   before do

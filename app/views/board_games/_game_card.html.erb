@@ -1,0 +1,15 @@
+<div class="col">
+  <div class="card h-100">
+    <%= link_to board_game_path(board_game), class: "text-decoration-none" do %>
+      <img src="<%= board_game.image_link %>" class="card-img-top" alt="<%= board_game.name %>" style="height: 200px; object-fit: contain;">
+      <div class="card-body">
+        <h5 class="card-title text-dark"><%= board_game.name %></h5>
+        <div class="card-text text-muted">
+          <p class="mb-1"><%= board_game.length %></p>
+          <p class="mb-1"><%= board_game.min_players %> - <%= board_game.max_players %> joueurs</p>
+          <p class="mb-0"><%= truncate(board_game.description, length: 100) %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div> 

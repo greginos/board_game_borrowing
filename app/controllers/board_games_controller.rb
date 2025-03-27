@@ -2,7 +2,7 @@ class BoardGamesController < ApplicationController
   before_action :set_board_game, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @board_games = BoardGame.all
+    @board_games = BoardGame.page(params[:page]).per(12)
 
     if search_params["players"].present?
       players = search_params["players"].to_i

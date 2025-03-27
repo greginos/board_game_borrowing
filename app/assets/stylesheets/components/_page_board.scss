@@ -29,11 +29,12 @@ App
 --------------------*/
 .app {
   @include center;
-  width: 640px;
   background: #fff;
+  width: 80%;
   border-radius: 15px;
   box-shadow: 0 5px 30px rgba(0, 0, 0, .2);
   padding: 1em;
+  margin-bottom: 10em;
 
   h2 {
     color: #525661;

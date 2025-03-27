@@ -4,6 +4,8 @@ Rails.application.routes.draw do
       get "scan", to: "board_games#scan", as: "board_games_scan"
       post "scan", to: "board_games#create"
     end
+  end
+  resources :games, only: [] do
     resources :borrowings, only: [ :create, :new, :index, :destroy, :update ]
   end
   resources :borrowings, only: [ :show, :update, :destroy ]
@@ -27,4 +29,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "board_games#index"
+
+  get "legal", to: "pages#legal"
+  post "contact", to: "pages#contact"
 end

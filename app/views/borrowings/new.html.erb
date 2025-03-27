@@ -1,8 +1,9 @@
 <div class="app">
   <h4>Emprunt du jeu : <%= @board_game.name %> <%= image_tag @board_game.image_link, style: "width: 50px; height: 50px;" %></h4>
-  <h5>à <%= @borrowing.game.user.pseudo %> <%= image_tag @borrowing.game.user.avatar_url, class: "avatar", alt: "avatar", style: "width: 50px; height: 50px;" %></h5>
+  <h5>à <%= @game.user.pseudo %> <%= image_tag @game.user.avatar_url, class: "avatar", alt: "avatar", style: "width: 50px; height: 50px;" %></h5>
 
-  <%= simple_form_for([@board_game, @borrowing]) do |f| %>
+  <%= simple_form_for(@borrowing, url: game_borrowings_path(@game), method: :post) do |f| %>
+    <%= f.hidden_field :game_id, value: @game.id %>
     <div class="form-group">
       <%= f.input :start_date, as: :string, input_html: { type: 'date' }, label: "Date de début" %>
     </div>
