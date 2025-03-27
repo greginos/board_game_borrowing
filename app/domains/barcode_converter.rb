@@ -1,113 +1,74 @@
 class BarcodeConverter
   def initialize(barcode)
     @barcode = barcode
+    @toy_store = BarcodeConverterToyStore.new(@barcode)
+    @reseller = BarcodeConverterReseller.new(@barcode)
+  end
+
+  def get_list_of_found_games
+    toy_store_values = @toy_store.get_list_of_found_games
+    reseller_values = @reseller.get_list_of_found_games
+    [ toy_store_values, reseller_values ]
   end
 
   def convert
     raise StandardError if @barcode.nil?
-    boardgame = BoardGame.find_by(ean: @barcode)
-    return boardgame if boardgame
 
-    get_game_infos
-  end
+    toy_store_values, reseller_values = get_list_of_found_games
 
-  def update_board_game(board_game)
-     game_data = get_game_infos(@barcode)
-     if game_data.nil?
-       game_data = get_game_infos(board_game.name)
-     end
-     board_game.name = game_data[:name]
-     board_game.image_link = game_data[:image_link]
-     board_game.ean = @barcode
-     board_game.min_players = game_data[:min_players]
-     board_game.max_players = game_data[:max_players]
-     board_game.minimum_age = game_data[:minimum_age]
-     board_game.length = game_data[:length]
-     board_game.description = game_data[:description]
-     board_game.save
-  end
-
-  def fill_image
-    board_game = BoardGame.find_by(ean: @barcode)
-    values = get_game_infos(@barcode)
-    if values.nil?
-      values = get_game_infos(board_game.name)
+    # Si on a des valeurs des deux côtés, on cherche un match exact
+    if toy_store_values && reseller_values
+      toy_store_values[:values].each do |toy_game|
+        reseller_values[:values].each do |reseller_game|
+          if normalize_name(toy_game[:name]) == normalize_name(reseller_game[:name])
+            return @reseller.convert(reseller_game[:callback_url])
+          end
+        end
+      end
     end
-    board_game.update(image_link: values[:image_link]) unless values[:image_link].nil?
+
+    # Si on a plusieurs valeurs dans toy_store, on renvoie la liste
+    if toy_store_values && toy_store_values[:values].size > 1
+      return toy_store_values
+    end
+
+    # Si on a plusieurs valeurs dans reseller, on renvoie la liste
+    if reseller_values && reseller_values[:values].size > 1
+      return reseller_values
+    end
+
+    # Si on a une seule valeur dans toy_store, on l'utilise
+    if toy_store_values && toy_store_values[:values].size == 1
+      return @toy_store.convert(toy_store_values[:values].first[:callback_url])
+    end
+
+    # Si on a une seule valeur dans reseller, on l'utilise
+    if reseller_values && reseller_values[:values].size == 1
+      return @reseller.convert(reseller_values[:values].first[:callback_url])
+    end
+
+    # Si aucune valeur n'est trouvée, on renvoie les deux résultats
+    [ toy_store_values, reseller_values ]
+  end
+
+  def convert_with_converter(callback_url, converter_type)
+    case converter_type
+    when :toy_store
+      @toy_store.convert(callback_url)
+    when :reseller
+      @reseller.convert(callback_url)
+    else
+      raise ArgumentError, "Type de convertisseur non supporté: #{converter_type}"
+    end
   end
 
   private
 
-  def get_game_infos(query = @barcode)
-    url = "https://www.philibertnet.com/fr/recherche?search_query=#{query}"
-    html = URI.open(url)
-    doc = Nokogiri::HTML.parse(html)
-    if no_results(doc)
-      return nil
-    end
-
-    callback_url = doc.search(".wrapper_product .s_title_block").first.elements.first["href"].split("?").first
-    html = URI.open(callback_url)
-    doc = Nokogiri::HTML.parse(html)
-
-    name = get_name_of_game(doc)
-    minimum_age = get_age_of_game(doc)
-    min_players, max_players = get_number_of_players(doc)
-    length = get_length_of_game(doc)
-    image_link = get_image_link(doc)
-    description = get_description_of_game(doc)
-    {
-      name: name,
-      image_link: image_link,
-      ean: @barcode,
-      min_players: min_players,
-      max_players: max_players,
-      minimum_age: minimum_age,
-      length: length,
-      description: description
-    }
-  end
-
-  def no_results(doc)
-    page_text = doc.text.strip.gsub(/\s+/, " ")
-    searched_text = "0 résultats ont été trouvés."
-    page_text.include?(searched_text)
-  end
-
-  def get_number_of_players(doc)
-    element = doc.search(".nb_joueurs").first
-    if element
-      if element.text.strip.match?(/(.*) à (.*) joueur\(s\)/)
-        min_players = element.text.strip.match(/(.*) à (.*) joueur\(s\)/).captures.first.to_i
-        max_players = element.text.strip.match(/(.*) à (.*) joueur\(s\)/).captures.last.to_i
-      elsif
-        players = element.text.strip.match(/(.*) joueur\(s\)/).captures.first.to_i
-        min_players = players
-        max_players = players
-      end
-    end
-    return min_players, max_players
-  end
-
-  def get_length_of_game(doc)
-    doc.search(".duree_partie").first.text.strip
-  rescue
-    ""
-  end
-
-  def get_image_link(doc)
-    doc.search("#bigpic").first["src"]
-  end
-
-  def get_name_of_game(doc)
-    doc.search("#product_name").text
-  end
-
-  def get_age_of_game(doc)
-    doc.search(".age").first.text.strip.match(/à partir de (.*) ans/).captures.first.to_i
-  end
-
-  def get_description_of_game(doc)
-    doc.search("#short_description_content").text
+  def normalize_name(name)
+    return nil if name.nil?
+    name.downcase
+       .gsub(/[^a-z0-9\s]/, "") # Supprime les caractères spéciaux
+       .gsub(/\s+/, " ")        # Remplace les espaces multiples par un seul
+       .strip                    # Supprime les espaces au début et à la fin
   end
 end

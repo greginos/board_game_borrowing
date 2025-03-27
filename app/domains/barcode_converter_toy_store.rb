@@ -1,37 +1,41 @@
 class BarcodeConverterToyStore
+  SOURCE_URL = "https://www.joueclub.fr/contenu/resultat-de-recherche-produits.html?searchText="
   def initialize(barcode)
     @barcode = barcode
   end
 
-  def convert
-    raise StandardError if @barcode.nil?
-    boardgame = BoardGame.find_by(ean: @barcode)
-    return boardgame unless boardgame.nil?
-
-    get_game_infos
-  end
-
-  def fill_image
-    board_game = BoardGame.find_by(ean: @barcode)
-    values = get_game_infos(@barcode)
-    if values.nil?
-      values = get_game_infos(board_game.name)
-    end
-    board_game.update(image_link: values[:image_link]) unless values[:image_link].nil?
-  end
-
-  private
-
-  def get_game_infos(query = @barcode)
-    url = "https://www.joueclub.fr/contenu/resultat-de-recherche-produits.html?searchText=#{query}"
+  def get_list_of_found_games(query = @barcode)
+    url = "#{SOURCE_URL}#{query}"
     html = URI.open(url)
     doc = Nokogiri::HTML.parse(html)
     if no_results(doc)
       return nil
     end
-    callback_url = doc.search(".product-list .product .product__content .product-visual").first.children.first.attributes["href"].value
+    values = []
+    doc.search(".product__content a").first(3).each do |element|
+      values <<  { name: element.attribute("title").value, callback_url: element.attribute("href").value }
+    end
+    { origin: "toy_store", values: values.uniq }
+  end
 
-    html = URI.open(callback_url)
+  def convert(url)
+    get_game_infos(url)
+  end
+
+  def fill_image
+    board_game = BoardGame.find_by(ean: @barcode)
+    values = get_list_of_found_games
+    if values.nil?
+      values = get_game_infos(board_game.name)
+    end
+    get_game_infos(values[:callback_url])
+    board_game.update(image_link: values[:image_link]) unless values[:image_link].nil?
+  end
+
+  private
+
+  def get_game_infos(url)
+    html = URI.open(url)
     doc = Nokogiri::HTML.parse(html)
 
 
@@ -43,7 +47,16 @@ class BarcodeConverterToyStore
     min_players, max_players = get_number_of_players(full_description)
     length = get_length_of_game(full_description)
 
-    { name: name, image_link: image_link, ean: @barcode, min_players: min_players, max_players: max_players, minimum_age: minimum_age, length: length, description: description }
+    {
+      name: name,
+      image_link: image_link,
+      ean: @barcode,
+      min_players: min_players,
+      max_players: max_players,
+      minimum_age: minimum_age,
+      length: length,
+      description: description
+    }
   end
 
   def no_results(doc)
@@ -80,7 +93,7 @@ class BarcodeConverterToyStore
 
   def get_image_link(doc)
     element = doc.search(".skeepers_product__reviews")
-    element.first["data-image-url"] if element
+    element.first["data-image-url"] unless element&.first.nil?
   end
 
   def get_name_of_game(doc)
