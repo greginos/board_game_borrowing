@@ -15,6 +15,8 @@ class User < ApplicationRecord
   has_many :friends, through: :friendships, source: :friend
   has_many :inverse_friendships, foreign_key: :friend_id, class_name: "Friendship"
   has_many :inverse_friends, through: :inverse_friendships, source: :user
+  has_many :sent_messages, class_name: "Message", foreign_key: "from_id"
+  has_many :received_messages, class_name: "Message", foreign_key: "to_id"
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :pseudo, presence: true, uniqueness: true
@@ -93,5 +95,9 @@ class User < ApplicationRecord
 
   def pending_borrowings_for_owner
     Borrowing.pending.joins(:game).where(games: { user_id: id })
+  end
+
+  def messages
+    sent_messages + received_messages
   end
 end

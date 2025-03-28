@@ -1,0 +1,24 @@
+<div class="app">
+  <div class="container mt-4">
+    <h1>Mes conversations</h1>
+
+    <% if @conversations.any? %>
+      <div class="list-group">
+        <% @conversations.each do |user, messages| %>
+          <%= link_to conversation_messages_path(id: user.id), class: "list-group-item list-group-item-action" do %>
+            <div class="d-flex w-100 justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-1"><%= user.pseudo %></h5>
+                <p class="mb-1 text-muted"><%= messages.first.text %></p>
+                <small class="text-muted">Dernier message : <%= messages.first.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+              </div>
+              <span class="badge bg-primary rounded-pill"><%= messages.count %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-center">Vous n'avez pas encore de conversations</p>
+    <% end %>
+  </div>
+</div>
