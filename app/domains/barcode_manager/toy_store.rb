@@ -93,8 +93,7 @@ module BarcodeManager
     end
 
     def get_image_link(doc)
-      element = doc.search(".skeepers_product__reviews")
-      element.first["data-image-url"] unless element&.first.nil?
+      doc.at('meta[name="og:image"]')["content"].sub(%r{^https://[^/]+(https://)}, '\1')
     end
 
     def get_name_of_game(doc)
