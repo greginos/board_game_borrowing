@@ -19,9 +19,9 @@ class MessagesController < ApplicationController
     @message.to = User.find(params[:to_id])
 
     if @message.save
-      redirect_to user_messages_path(@message.to), notice: "Message envoy\u00E9."
+      redirect_to conversation_messages_path(id: @message.to.id), notice: "Message envoy\u00E9."
     else
-      redirect_to user_messages_path(@message.to), alert: "Erreur lors de l'envoi du message."
+      redirect_to conversation_messages_path(id: @message.to.id), alert: "Erreur lors de l'envoi du message."
     end
   end
 

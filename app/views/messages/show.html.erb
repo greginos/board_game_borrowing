@@ -1,3 +1,25 @@
+<div class="app">
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Conversation avec <%= @other_user.pseudo %></h1>
+      <%= link_to "Retour aux conversations", messages_path, class: "btn btn-outline-primary" %>
+    </div>
+
+    <div class="messages-container" style="height: 60vh; overflow-y: auto;">
+      <% if @messages.any? %>
+        <% @messages.each do |message| %>
+          <div class="message <%= message.from == current_user ? 'sent' : 'received' %> mb-3">
+            <div class="message-content p-3 rounded <%= message.from == current_user ? 'bg-primary text-white' : 'bg-light' %>">
+              <%= message.text %>
+            </div>
+            <small class="text-muted"><%= message.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-center">Aucun message dans cette conversation</p>
+      <% end %>
+    </div>
+
     <div class="message-form mt-4">
       <%= form_with(url: messages_path, local: true) do |f| %>
         <%= f.hidden_field :to_id, value: @other_user.id %>
@@ -6,4 +28,23 @@
           <%= f.submit "Envoyer", class: "btn btn-primary" %>
         </div>
       <% end %>
-    </div> 
+    </div>
+  </div>
+</div>
+
+<style>
+  .messages-container {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+  }
+  .message {
+    max-width: 70%;
+  }
+  .message.sent {
+    margin-left: auto;
+  }
+  .message.received {
+    margin-right: auto;
+  }
+</style> 
