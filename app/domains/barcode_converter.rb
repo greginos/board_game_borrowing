@@ -37,16 +37,6 @@ class BarcodeConverter
       return reseller_values
     end
 
-    # Si on a une seule valeur dans toy_store, on l'utilise
-    if toy_store_values && toy_store_values[:values].size == 1
-      return @toy_store.convert(toy_store_values[:values].first[:callback_url])
-    end
-
-    # Si on a une seule valeur dans reseller, on l'utilise
-    if reseller_values && reseller_values[:values].size == 1
-      return @reseller.convert(reseller_values[:values].first[:callback_url])
-    end
-
     # Si aucune valeur n'est trouvée, on renvoie les deux résultats
     [ toy_store_values, reseller_values ]
   end
