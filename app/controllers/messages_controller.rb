@@ -16,8 +16,8 @@ class MessagesController < ApplicationController
 
   def create
     @message = current_user.sent_messages.build(message_params)
-    @message.to = User.find(params[:to_id])
-
+    @message.to = User.find(message_params[:to_id])
+    @message.friendship = current_user.friendship_with(@message.to)
     if @message.save
       redirect_to conversation_messages_path(id: @message.to.id), notice: "Message envoy\u00E9."
     else
@@ -28,6 +28,6 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:text)
+    params.require(:message).permit(:text, :to_id)
   end
 end

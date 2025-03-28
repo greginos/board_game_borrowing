@@ -21,7 +21,7 @@
     </div>
 
     <div class="message-form mt-4">
-      <%= form_with(url: messages_path, local: true) do |f| %>
+      <%= form_with(model: Message.new, local: true) do |f| %>
         <%= f.hidden_field :to_id, value: @other_user.id %>
         <div class="input-group">
           <%= f.text_field :text, class: "form-control", placeholder: "Écrivez votre message..." %>
