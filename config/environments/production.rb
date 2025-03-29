@@ -59,7 +59,7 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.delivery_method = :smtp
   host = "jeux.emportet.fr" # replace with your own url
-  config.action_mailer.default_url_options = { host: host, protocol: "https", from: '"Jeux à emportet" <contact@emportet.fr>' }
+  config.action_mailer.default_url_options = { host: host, protocol: "https", from: "contact@emportet.fr" }
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
     address: "smtp.ionos.fr",
