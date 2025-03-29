@@ -103,7 +103,7 @@
     </div>
     <div class='user_games'>
         <section class="board_games">
-            <% @user.board_games.each do |board_game| %>
+            <% @board_games.each do |board_game| %>
                 <%= link_to board_game_path(board_game.id) do %>
                     <div class="board_game">
                         <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
@@ -117,5 +117,9 @@
                 <% end %>
             <% end %>
         </section>
+
+        <div class="d-flex justify-content-center mt-4">
+            <%= paginate @board_games %>
+        </div>
     </div>
 </div>

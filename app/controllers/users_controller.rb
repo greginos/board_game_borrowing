@@ -3,7 +3,8 @@ class UsersController < ApplicationController
   before_action :set_user, only: [ :show, :edit, :update ]
 
   def show
-    raise ActiveRecord::RecordNotFound unless @user
+    @user = User.find(params[:id])
+    @board_games = @user.board_games.page(params[:page]).per(10)
   end
 
   def edit
