@@ -57,8 +57,19 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.delivery_method = :smtp
+  host = "jeux.emportet.fr" # replace with your own url
+  config.action_mailer.default_url_options = { host: host }
 
+  # SMTP settings for gmail
+  config.action_mailer.smtp_settings = {
+    address: "smtp.ionos.com",
+    port: 465,
+    user_name: ENV["SMTP_USERNAME"],
+    password: ENV["SMTP_PASSWORD"],
+    authentication: "plain",
+    enable_starttls_auto: true
+  }
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
