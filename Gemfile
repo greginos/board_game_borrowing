@@ -56,6 +56,9 @@ gem "dotenv-rails"
 # Use kaminari for pagination
 gem "kaminari"
 
+# Use Active Admin for admin interface
+gem "activeadmin"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

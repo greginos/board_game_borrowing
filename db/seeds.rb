@@ -226,3 +226,11 @@ popular_games_data.each do |game_data|
     game_data[:description]
   )
 end
+
+if Rails.env.development?
+  AdminUser.create!(
+    email: 'admin@example.com',
+    password: 'password',
+    password_confirmation: 'password'
+  ) unless AdminUser.find_by(email: 'admin@example.com')
+end

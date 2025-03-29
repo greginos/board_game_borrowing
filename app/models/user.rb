@@ -100,4 +100,8 @@ class User < ApplicationRecord
   def messages
     sent_messages + received_messages
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [ "avatar", "created_at", "description", "email", "id", "pseudo", "remember_created_at", "updated_at" ]
+  end
 end

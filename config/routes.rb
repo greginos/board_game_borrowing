@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
   resources :board_games do
     collection do
       get "scan", to: "board_games#scan", as: "board_games_scan"
