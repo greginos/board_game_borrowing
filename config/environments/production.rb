@@ -63,7 +63,7 @@ Rails.application.configure do
 
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
-    address: "smtp-1and1.live.any.po.server.lan",
+    address: "smtp.ionos.fr",
     port: 587,
     user_name: ENV["SMTP_USERNAME"],
     password: ENV["SMTP_PASSWORD"],
