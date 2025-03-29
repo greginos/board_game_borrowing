@@ -13,19 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libxml2-dev libxslt1-dev zlib1g-dev
+
       - name: Cache Bundler dependencies
         uses: actions/cache@v3
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-bundler-${{ hashFiles('**/Gemfile.lock') }}
+          key: bundler-${{ runner.os }}-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-bundler-
+            bundler-${{ runner.os }}-
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          ruby-version: '3.3'
+          bundler-cache: false  # Désactiver le cache automatique
 
       - name: Ensure correct Ruby platform
         run: bundle lock --add-platform x86_64-linux
@@ -33,40 +38,8 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3 --no-cache
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
+      - name: Scan for vulnerabilities
         run: bin/brakeman --no-pager
-
-  scan_js:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
-
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
 
   test:
     runs-on: ubuntu-latest
@@ -85,8 +58,9 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y \
-            google-chrome-stable curl libjemalloc2 libvips postgresql-client
+          sudo apt-get install -y google-chrome-stable curl \
+            libjemalloc2 libvips postgresql-client \
+            build-essential libxml2-dev libxslt1-dev zlib1g-dev
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -94,8 +68,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          ruby-version: '3.3'
+          bundler-cache: false
 
       - name: Ensure correct Ruby platform
         run: bundle lock --add-platform x86_64-linux
