@@ -102,6 +102,7 @@
         <% end %>
     </div>
     <div class='user_games'>
+        <h3><% if user_signed_in? && current_user == @user %>Mes jeux<% else %>Jeux de <%= @user.pseudo %><% end %></h3>
         <section class="board_games">
             <% @board_games.each do |board_game| %>
                 <%= link_to board_game_path(board_game.id) do %>
