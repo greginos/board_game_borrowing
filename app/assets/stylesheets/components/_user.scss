@@ -4,17 +4,28 @@ html, body {
   font-family: Abel, Arial, Verdana, sans-serif;
 }
 
+.user {
+  @media (min-width: 768px) {
+    display: flex;
+    gap: 2rem;
+  }
+}
+
 .grid_user {
-  display: flex;
-  gap: 2rem;
+  display: block;
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
+
+  @media (min-width: 768px) {
+    display: flex;
+    gap: 2rem;
+  }
 }
 
 .left_panel {
   flex: 1;
-  max-width: 450px;
+  max-width: 80%;
 }
 
 .user_games {
@@ -78,7 +89,7 @@ html, body {
   }
 
   &.profile-card {
-    height: 250px;
+    height: 16em;
   }
 }
 
