@@ -1,19 +1,20 @@
-<div class='app'>
-    <h2>Rechercher un utilisateur</h2>
+<div class="user-search-form">
+    <h2>Rechercher un utilisateur par email ou pseudo</h2>
 
     <%= form_with url: users_path, method: :get, local: true do |form| %>
-    <div>
-        <%= form.label :email, "Email de l'utilisateur" %>
-        <%= form.text_field :email, placeholder: "ex: john.doe@email.com" %>
-    </div>
-    <div>
-        <%= form.label :pseudo, "Pseudo de l'utilisateur" %>
-        <%= form.text_field :pseudo, placeholder: "ex: Barbie31" %>
-    </div>
+        <div class="form-inputs">
+            <div class="form-group">
+                <%= form.label :email, "Email de l'utilisateur" %>
+                <%= form.text_field :email, placeholder: "ex: john.doe@email.com" %>
+            </div>
+            <div class="form-group">
+                <%= form.label :pseudo, "Pseudo de l'utilisateur" %>
+                <%= form.text_field :pseudo, placeholder: "ex: Barbie31" %>
+            </div>
+        </div>
 
-    <div>
-        <%= form.submit "Rechercher" %>
-    </div>
+        <div class="form-actions">
+            <%= form.submit "Rechercher" %>
+        </div>
     <% end %>
-
 </div>

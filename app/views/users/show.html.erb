@@ -45,20 +45,21 @@
         <%= render 'borrowings/pending_requests' if user_signed_in? && current_user == @user %>
         
         <% if user_signed_in? && current_user == @user %>
-            <div class='card'>
-                <div class="borrowings" data-controller="borrowings">
-                    <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Emprunts en cours</h2>
-                    <div class="borrowings-content" data-borrowings-target="content">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Jeu</th>
-                                    <th>Date d'emprunt</th>
-                                    <th>Date de retour</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+            <% if @user.borrowings.any? %>
+                <div class='card'>
+                    <div class="borrowings" data-controller="borrowings">
+                        <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Emprunts en cours</h2>
+                        <div class="borrowings-content" data-borrowings-target="content">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Jeu</th>
+                                        <th>Date d'emprunt</th>
+                                        <th>Date de retour</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                 <% @user.borrowings.each do |borrowing| %>
                                     <tr>
                                         <td><%= image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;") %></td>
@@ -67,60 +68,68 @@
                                         <td><%= borrowing.end_date.strftime("%d/%m/%Y") %></td>
                                     </tr>
                                 <% end %>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class='card'>
-                <div class="borrowings" data-controller="borrowings">
-                    <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Jeux prêtés</h2>
-                    <div class="borrowings-content" data-borrowings-target="content">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Jeu</th>
-                                    <th>Date d'emprunt</th>
-                                    <th>Date de retour</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% @user.loaned_games.each do |borrowing| %>
+            <% end %>
+            <% if @user.loaned_games.any? %>
+                <div class='card'>
+                    <div class="borrowings" data-controller="borrowings">
+                        <h2 data-action="click->borrowings#toggle" data-borrowings-target="title">Jeux prêtés</h2>
+                        <div class="borrowings-content" data-borrowings-target="content">
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td><%= image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;") %></td>
-                                        <td><%= borrowing.game.board_game.name %></td>
-                                        <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
-                                        <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                        <th></th>
+                                        <th>Jeu</th>
+                                        <th>Date d'emprunt</th>
+                                        <th>Date de retour</th>
                                     </tr>
-                                <% end %>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <% @user.loaned_games.each do |borrowing| %>
+                                        <tr>
+                                            <td><%= image_tag(borrowing.game.board_game.image_link, style: "max-height: 50px;") %></td>
+                                            <td><%= borrowing.game.board_game.name %></td>
+                                            <td><%= borrowing.start_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                            <td><%= borrowing.end_date.strftime("%d/%m/%Y %H:%M") %></td>
+                                        </tr>
+                                    <% end %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <% end %>
         <% end %>
     </div>
     <div class='user_games'>
         <h3><% if user_signed_in? && current_user == @user %>Mes jeux<% else %>Jeux de <%= @user.pseudo %><% end %></h3>
-        <section class="board_games">
-            <% @board_games.each do |board_game| %>
-                <%= link_to board_game_path(board_game.id) do %>
-                    <div class="board_game">
-                        <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
-                        <div class="title"><%=board_game.name %></div>
-                        <div class="info">
-                            <span class="length"><%= board_game.length %></span>
-                            <span class="players"><%= board_game.min_players %> - <%= board_game.max_players %> joueurs</span>
+        <% if @board_games.any? %>
+            <section class="board_games">
+                <% @board_games.each do |board_game| %>
+                    <%= link_to board_game_path(board_game.id) do %>
+                        <div class="board_game">
+                            <img src= <%="#{board_game.image_link}" %> alt="" class="poster" />
+                            <div class="title"><%=board_game.name %></div>
+                            <div class="info">
+                                <span class="length"><%= board_game.length %></span>
+                                <span class="players"><%= board_game.min_players %> - <%= board_game.max_players %> joueurs</span>
+                            </div>
+                            <div class="desc"><%= board_game.description %></div>
                         </div>
-                        <div class="desc"><%= board_game.description %></div>
-                    </div>
+                    <% end %>
                 <% end %>
-            <% end %>
-        </section>
+            </section>
 
-        <div class="d-flex justify-content-center mt-4">
-            <%= paginate @board_games %>
-        </div>
+            <div class="d-flex justify-content-center mt-4">
+                <%= paginate @board_games %>
+            </div>
+        <% else %>
+            <%= button_to "Ajouter un jeu", board_games_scan_board_games_path, method: :get, class: "btn btn-primary" %>
+        <% end %>
+
     </div>
 </div>
