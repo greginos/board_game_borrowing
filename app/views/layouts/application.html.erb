@@ -21,10 +21,12 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload"%>
 
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
-  <body><%= render "shared/navbar" %>
-      <%= render "shared/flashes" %>
+  <body data-controller="dropdown">
+    <%= render "shared/navbar" %>
+    <%= render "shared/flashes" %>
 
     <%= yield %>
 
