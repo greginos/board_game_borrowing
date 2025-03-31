@@ -31,73 +31,20 @@ class BoardGamesController < ApplicationController
 
   def scan
     @board_game = BoardGame.new
+    ean = params[:ean]
+    selected_game = params[:selected_game]
 
-    if params[:ean].present?
-      if BoardGame.find_by(ean: params[:ean])
-        @board_game = BoardGame.find_by(ean: params[:ean])
-        return @board_game
-      end
-      barcode_converter = BarcodeConverter.new(params[:ean])
-      game_data = barcode_converter.convert
+    return find_existing_board_game(ean) if ean.present? && BoardGame.find_by(ean: ean)
 
-      if game_data.is_a?(Array) && game_data.size == 2
-        @game_list = []
-        game_data.each do |source_data|
-          next unless source_data && source_data[:values]
-          source_data[:values].each do |game|
-            @game_list << {
-              name: game[:name],
-              callback_url: game[:callback_url],
-              source: source_data[:origin]
-            }
-          end
-        end
-      elsif game_data.is_a?(Hash) && game_data[:values]
-        @game_list = game_data[:values].map do |game|
-          {
-            name: game[:name],
-            callback_url: game[:callback_url],
-            source: game_data[:origin]
-          }
-        end
-      elsif game_data.is_a?(Hash)
-        game_info = game_data
-      else
-        game_info = barcode_converter.convert_with_converter(game_data[:callback_url], game_data[:origin].to_sym)
-      end
-
-      if game_info
-        @game_list = nil
-        @board_game.name = game_info[:name]
-        @board_game.image_link = game_info[:image_link]
-        @board_game.ean = game_info[:ean]
-        @board_game.min_players = game_info[:min_players]
-        @board_game.max_players = game_info[:max_players]
-        @board_game.minimum_age = game_info[:minimum_age]
-        @board_game.length = game_info[:length]
-        @board_game.description = game_info[:description]
-      end
-
-      if params[:selected_game].present?
-        # Si un jeu a été sélectionné, on récupère ses informations
-        callback_url, source = params[:selected_game].split("|")
-        converter = BarcodeConverter.new(params[:ean])
-        game_info = converter.convert_with_converter(callback_url, source.to_sym)
-
-        if game_info
-          @game_list = nil
-
-          @board_game.name = game_info[:name]
-          @board_game.image_link = game_info[:image_link]
-          @board_game.ean = game_info[:ean]
-          @board_game.min_players = game_info[:min_players]
-          @board_game.max_players = game_info[:max_players]
-          @board_game.minimum_age = game_info[:minimum_age]
-          @board_game.length = game_info[:length]
-          @board_game.description = game_info[:description]
-        end
-      end
+    if ean.present?
+      game_data = BarcodeConverter.new(ean).convert
+      process_game_data(game_data)
     end
+
+    process_selected_game(selected_game, ean) if selected_game.present?
+
+
+    @board_game
   end
 
   def create
@@ -132,6 +79,82 @@ class BoardGamesController < ApplicationController
     @board_game.destroy
     redirect_to board_games_path, notice: "BoardGame was successfully destroyed."
   end
+
+  private
+
+  def find_existing_board_game(ean)
+    @board_game = BoardGame.find_by(ean: ean)
+    @board_game
+  end
+
+  def process_game_data(game_data)
+    case game_data
+    when nil, {}, []
+      flash[:alert] = "Aucune information trouvée pour ce jeu." # or handle empty game_data
+    when Array
+      @game_list = extract_game_list_from_array(game_data)
+    when Hash
+      if game_data[:values]
+        @game_list = extract_game_list_from_hash_values(game_data)
+      else
+        populate_board_game_from_hash(game_data)
+      end
+    else
+      populate_board_game_from_remote_data(game_data)
+    end
+  end
+
+  def extract_game_list_from_array(game_data)
+    game_list = []
+    game_data.each do |source_data|
+      next unless source_data && source_data[:values]
+      source_data[:values].each do |game|
+        game_list << {
+          name: game[:name],
+          callback_url: game[:callback_url],
+          source: source_data[:origin]
+        }
+      end
+    end
+    game_list
+  end
+
+  def extract_game_list_from_hash_values(game_data)
+    game_data[:values].map do |game|
+      {
+        name: game[:name],
+        callback_url: game[:callback_url],
+        source: game_data[:origin]
+      }
+    end
+  end
+
+  def populate_board_game_from_hash(game_info)
+    @game_list = nil
+    @board_game.assign_attributes(
+      name: game_info[:name],
+      image_link: game_info[:image_link],
+      ean: game_info[:ean],
+      min_players: game_info[:min_players],
+      max_players: game_info[:max_players],
+      minimum_age: game_info[:minimum_age],
+      length: game_info[:length],
+      description: game_info[:description]
+    )
+  end
+
+  def populate_board_game_from_remote_data(game_data)
+    game_info = BarcodeConverter.new(params[:ean]).convert_with_converter(game_data[:callback_url], game_data[:origin].to_sym)
+    populate_board_game_from_hash(game_info) if game_info
+  end
+
+  def process_selected_game(selected_game, ean)
+    callback_url, source = selected_game.split("|")
+    game_info = BarcodeConverter.new(ean).convert_with_converter(callback_url, source.to_sym)
+    populate_board_game_from_hash(game_info) if game_info
+  end
+
+
 
   private
 

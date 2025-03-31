@@ -39,7 +39,7 @@ class BarcodeConverter
     end
 
     # Si aucune valeur n'est trouvée, on renvoie les deux résultats
-    [ toy_store_values, reseller_values ]
+    [ toy_store_values, reseller_values ].compact
   end
 
   def convert_with_converter(callback_url, converter_type)

@@ -14,7 +14,7 @@
             <%= render "board_games/game_list" %>
         <% end %>
 
-        <% if @board_game.ean || flash[:alert] == "Aucune information trouvée pour cet EAN."%>
+        <% if @board_game.ean || flash[:alert] == "Aucune information trouvée pour ce jeu."%>
             <%= form_with(model: @board_game, url: board_games_scan_board_games_path, local: true, class: "mb-3") do |form| %>
                 <% if @board_game.errors.any? %>
                     <div class="alert alert-danger">
