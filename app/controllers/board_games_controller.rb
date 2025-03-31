@@ -66,7 +66,7 @@ class BoardGamesController < ApplicationController
         @game_list = nil
         @board_game.name = game_info[:name]
         @board_game.image_link = game_info[:image_link]
-        @board_game.ean = params[:ean]
+        @board_game.ean = game_info[:ean]
         @board_game.min_players = game_info[:min_players]
         @board_game.max_players = game_info[:max_players]
         @board_game.minimum_age = game_info[:minimum_age]
@@ -85,7 +85,7 @@ class BoardGamesController < ApplicationController
 
           @board_game.name = game_info[:name]
           @board_game.image_link = game_info[:image_link]
-          @board_game.ean = params[:ean]
+          @board_game.ean = game_info[:ean]
           @board_game.min_players = game_info[:min_players]
           @board_game.max_players = game_info[:max_players]
           @board_game.minimum_age = game_info[:minimum_age]

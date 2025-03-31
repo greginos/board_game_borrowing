@@ -1,8 +1,9 @@
 class BarcodeConverter
   def initialize(barcode)
-    @barcode = barcode
-    @toy_store = BarcodeManager::ToyStore.new(@barcode)
-    @reseller = BarcodeManager::Reseller.new(@barcode)
+    @barcode = barcode if barcode.match?(/^\d{12,13}$/)
+    @query = barcode
+    @toy_store = BarcodeManager::ToyStore.new(@barcode, @query)
+    @reseller = BarcodeManager::Reseller.new(@barcode, @query)
   end
 
   def get_list_of_found_games
@@ -12,7 +13,7 @@ class BarcodeConverter
   end
 
   def convert
-    raise StandardError if @barcode.nil?
+    raise StandardError if @barcode.nil? && @query.nil?
 
     toy_store_values, reseller_values = get_list_of_found_games
 

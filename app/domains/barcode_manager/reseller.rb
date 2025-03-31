@@ -2,8 +2,9 @@ module BarcodeManager
   class Reseller
     SOURCE_URL = "https://www.philibertnet.com/fr/recherche?search_query="
 
-    def initialize(barcode)
+    def initialize(barcode, query)
       @barcode = barcode
+      @query = query
     end
 
     def convert(url)
@@ -35,7 +36,8 @@ module BarcodeManager
       board_game.update(image_link: values[:image_link]) unless values[:image_link].nil?
     end
 
-    def get_list_of_found_games(query = @barcode)
+    def get_list_of_found_games
+      query = @barcode || @query
       url = "#{SOURCE_URL}#{query}"
       html = URI.open(url)
       doc = Nokogiri::HTML.parse(html)
@@ -65,7 +67,7 @@ module BarcodeManager
       {
         name: name,
         image_link: image_link,
-        ean: @barcode,
+        ean: @barcode || "",
         min_players: min_players,
         max_players: max_players,
         minimum_age: minimum_age,

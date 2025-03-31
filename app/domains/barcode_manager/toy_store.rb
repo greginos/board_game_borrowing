@@ -1,11 +1,13 @@
 module BarcodeManager
   class ToyStore
     SOURCE_URL = "https://www.joueclub.fr/contenu/resultat-de-recherche-produits.html?searchText="
-    def initialize(barcode)
+    def initialize(barcode, query)
       @barcode = barcode
+      @query = query
     end
 
-    def get_list_of_found_games(query = @barcode)
+    def get_list_of_found_games
+      query = @barcode || @query
       url = "#{SOURCE_URL}#{query}"
       html = URI.open(url)
       doc = Nokogiri::HTML.parse(html)
@@ -51,7 +53,7 @@ module BarcodeManager
       {
         name: name,
         image_link: image_link,
-        ean: @barcode,
+        ean: @barcode || "",
         min_players: min_players,
         max_players: max_players,
         minimum_age: minimum_age,
