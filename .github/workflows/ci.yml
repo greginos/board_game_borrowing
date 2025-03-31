@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y build-essential libxml2-dev libxslt1-dev zlib1g-dev
 
       - name: Cache Bundler dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
           key: bundler-${{ runner.os }}-${{ hashFiles('**/Gemfile.lock') }}
