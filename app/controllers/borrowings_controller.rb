@@ -4,9 +4,18 @@ class BorrowingsController < ApplicationController
   before_action :set_borrowing, only: [ :update ]
 
   def create
-    @borrowing = Borrowing.new(booking_params)
-    @borrowing.game = @game
-    @borrowing.user = current_user
+    start_date = booking_params[:start_date]
+    end_date = booking_params[:end_date]
+    if start_date > end_date
+      start_date =  booking_params[:end_date]
+      end_date = booking_params[:start_date]
+    end
+    @borrowing = Borrowing.new(
+                    start_date: start_date,
+                    end_date: end_date,
+                    game: @game,
+                    user: current_user
+                    )
 
     if can_borrow?
       if @borrowing.save

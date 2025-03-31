@@ -1,9 +1,13 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: [ :show ]
+  before_action :authenticate_user!
   before_action :set_user, only: [ :show, :edit, :update ]
 
   def show
-    @user = User.find(params[:id])
+    if params[:id] == "me" || params[:id].nil?
+      @user = current_user
+    else
+      @user = User.find(params[:id])
+    end
     @board_games = @user.board_games.page(params[:page]).per(10)
   end
 

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get "/users/search_form", to: "users#search_form", as: "search_form_users"
 
   devise_for :users
+  get "/user" => "users#show", :as => :user_root
   resources :users do
     resources :games, only: [ :index ]
     resources :friendships, only: [ :create ]

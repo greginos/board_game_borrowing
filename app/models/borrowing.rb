@@ -14,6 +14,7 @@ class Borrowing < ApplicationRecord
   validate :end_date_after_start_date
   validate :no_overlapping_borrowings
 
+  before_validation :ensure_dates_order
 
   def accept!
     accepted!
@@ -21,6 +22,16 @@ class Borrowing < ApplicationRecord
 
   def reject!
     rejected!
+  end
+
+  private
+
+  def ensure_dates_order
+    return if start_date.blank? || end_date.blank?
+
+    if end_date < start_date
+      self.start_date, self.end_date = end_date, start_date
+    end
   end
 
   def end_date_after_start_date

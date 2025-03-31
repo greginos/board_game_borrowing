@@ -45,6 +45,21 @@
         <%= render 'borrowings/pending_requests' if user_signed_in? && current_user == @user %>
         
         <% if user_signed_in? && current_user == @user %>
+            <% if @user.all_friends.any? %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Mes amis</h3>
+                    </div>
+                    <div class="card-body">
+                        <% @user.all_friends.each do |friend| %>
+                            <%= link_to user_path(friend), class: "friend-link" do %>
+                                <%= image_tag friend.avatar_url, class: "avatar", alt: "avatar" %>
+                                <span class="friend-pseudo"><%= friend.pseudo %></span>
+                            <% end %>
+                        <% end %>
+                    </div>
+                </div>
+            <% end%>
             <% if @user.borrowings.any? %>
                 <div class='card'>
                     <div class="borrowings" data-controller="borrowings">
@@ -127,8 +142,10 @@
             <div class="d-flex justify-content-center mt-4">
                 <%= paginate @board_games %>
             </div>
-        <% else %>
+        <% elsif user_signed_in? && current_user == @user %>
             <%= button_to "Ajouter un jeu", board_games_scan_board_games_path, method: :get, class: "btn btn-primary" %>
+        <% else %>
+            <p>Aucun jeu pour le moment</p>
         <% end %>
 
     </div>
