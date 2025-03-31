@@ -83,10 +83,10 @@ module BarcodeManager
     def get_number_of_players(doc)
       element = doc.search(".nb_joueurs").first
       if element
-        if element.text.strip.match?(/(.*) à (.*) joueur\(s\)/)
-          min_players = element.text.strip.match(/(.*) à (.*) joueur\(s\)/).captures.first.to_i
-          max_players = element.text.strip.match(/(.*) à (.*) joueur\(s\)/).captures.last.to_i
-        elsif
+        if element.text.strip.match?(/(.*) à (.*) joueur/)
+          min_players = element.text.strip.match(/(.*) à (.*) joueur/).captures.first.to_i
+          max_players = element.text.strip.match(/(.*) à (.*) joueur/).captures.last.to_i
+        else
           players = element.text.strip.match(/(.*) joueur\(s\)/).captures.first.to_i
           min_players = players
           max_players = players
@@ -96,25 +96,43 @@ module BarcodeManager
     end
 
     def get_length_of_game(doc)
-      doc.search(".duree_partie").first.text.strip
-    rescue
-      ""
+      begin
+        doc.search(".duree_partie").first.text.strip
+      rescue
+        ""
+      end
     end
 
     def get_image_link(doc)
-      doc.search("#bigpic").first["src"]
+      begin
+        doc.search("#bigpic").first["src"]
+      rescue
+        ""
+      end
     end
 
     def get_name_of_game(doc)
-      doc.search("#product_name").text
+      begin
+        doc.search("#product_name").text
+      rescue
+        ""
+      end
     end
 
     def get_age_of_game(doc)
-      doc.search(".age").first.text.strip.match(/à partir de (.*) ans/).captures.first.to_i
+      begin
+        doc.search(".age").first.text.strip.match(/à partir de (.*) ans/).captures.first.to_i
+      rescue
+        ""
+      end
     end
 
     def get_description_of_game(doc)
-      doc.search("#short_description_content").text
+      begin
+        doc.search("#short_description_content").text
+      rescue
+        ""
+      end
     end
   end
 end

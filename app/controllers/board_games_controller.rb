@@ -56,21 +56,22 @@ class BoardGamesController < ApplicationController
             source: game_data[:origin]
           }
         end
+      elsif game_data.is_a?(Hash)
+        game_info = game_data
       else
-        # Si on a un seul résultat, on le traite directement
         game_info = barcode_converter.convert_with_converter(game_data[:callback_url], game_data[:origin].to_sym)
+      end
 
-        if game_info
-          @game_list = nil
-          @board_game.name = game_info[:name]
-          @board_game.image_link = game_info[:image_link]
-          @board_game.ean = params[:ean]
-          @board_game.min_players = game_info[:min_players]
-          @board_game.max_players = game_info[:max_players]
-          @board_game.minimum_age = game_info[:minimum_age]
-          @board_game.length = game_info[:length]
-          @board_game.description = game_info[:description]
-        end
+      if game_info
+        @game_list = nil
+        @board_game.name = game_info[:name]
+        @board_game.image_link = game_info[:image_link]
+        @board_game.ean = params[:ean]
+        @board_game.min_players = game_info[:min_players]
+        @board_game.max_players = game_info[:max_players]
+        @board_game.minimum_age = game_info[:minimum_age]
+        @board_game.length = game_info[:length]
+        @board_game.description = game_info[:description]
       end
 
       if params[:selected_game].present?

@@ -20,7 +20,7 @@
         <div class="desc">
             <%= @board_game.description %>    
         </div>
-        <% if current_user %>
+        <% if current_user && !current_user.board_games.include?(@board_game) %>
         <div class="borrowers">
             <% if @board_game.games.from_friends(current_user).any? %>
                 <h3>Emprunter ce jeu à :</h3>

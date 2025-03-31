@@ -67,8 +67,12 @@ module BarcodeManager
     end
 
     def get_description_of_game(doc)
-      element = doc.search(".seo_description")
-      element.children&.text&.strip if element
+      begin
+        element = doc.search(".seo_description")
+        element.children&.text&.strip if element
+      rescue
+        ""
+      end
     end
 
     def get_number_of_players(description)
@@ -93,17 +97,29 @@ module BarcodeManager
     end
 
     def get_image_link(doc)
-      doc.at('meta[name="og:image"]')["content"].sub(%r{^https://[^/]+(https://)}, '\1')
+      begin
+        doc.at('meta[name="og:image"]')["content"].sub(%r{^https://[^/]+(https://)}, '\1')
+      rescue
+        ""
+      end
     end
 
     def get_name_of_game(doc)
-      element = doc.search(".c-product-details-informations__container .row .c-product-details-informations__col .product__title")
-      element.text&.strip.match(/Caractéristiques (.*)/).captures.first if element
+      begin
+        element = doc.search(".c-product-details-informations__container .row .c-product-details-informations__col .product__title")
+        element.text&.strip.match(/Caractéristiques (.*)/).captures.first if element
+      rescue
+        ""
+      end
     end
 
     def get_age_of_game(doc)
-      element = doc.search(".c-product-details-informations__container .row .c-product-details-informations__col .list li")
-      minimum_age = element.first.children.text.scan(/\d+/).first.to_i if element
+      begin
+        element = doc.search(".c-product-details-informations__container .row .c-product-details-informations__col .list li")
+        minimum_age = element.first.children.text.scan(/\d+/).first.to_i if element
+      rescue
+        ""
+      end
     end
   end
 end
