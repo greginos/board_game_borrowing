@@ -33,6 +33,10 @@ class BoardGamesController < ApplicationController
     @board_game = BoardGame.new
 
     if params[:ean].present?
+      if BoardGame.find_by(ean: params[:ean])
+        @board_game = BoardGame.find_by(ean: params[:ean])
+        return @board_game
+      end
       barcode_converter = BarcodeConverter.new(params[:ean])
       game_data = barcode_converter.convert
 

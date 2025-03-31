@@ -35,7 +35,7 @@
                                     <% end %>
                                 <% end %>
                             <% else %>
-                                <%= button_to "Ajouter en ami", user_friendships_path(current_user, friend_id: @user.id), class: "btn btn-primary" %>
+                                <%= button_to "Ajouter en ami", user_friendships_path(current_user, friend_id: user.id), class: "btn btn-primary" %>
                             <% end %>
                         <% end %>
                     </div>
