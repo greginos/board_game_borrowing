@@ -32,9 +32,10 @@
         <div class="card-body">
           <div class="list-group">
             <% @contacts.each do |contact| %>
-              <%= link_to conversations_path(user_id: contact.id), 
-                  class: "list-group-item list-group-item-action",
-                  data: { turbo_method: "post" } do %>
+              <%= button_to conversations_path(user_id: contact.id), 
+                  class: "list-group-item list-group-item-action w-100 text-start border-0 bg-transparent",
+                  method: :post,
+                  data: { turbo: false } do %>
                 <div class="d-flex align-items-center">
                   <%= image_tag contact.avatar_url, class: "rounded-circle me-2", style: "width: 40px; height: 40px;" %>
                   <div>

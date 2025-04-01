@@ -16,7 +16,26 @@ class ConversationsController < ApplicationController
   end
 
   def create
-    @conversation = Conversation.find_or_create_by(user1: current_user, user2_id: params[:user_id])
+    @other_user = User.find(params[:user_id])
+
+    # Vérifier si une conversation existe déjà
+    @conversation = Conversation.where(
+      "(user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)",
+      current_user.id, @other_user.id,
+      @other_user.id, current_user.id
+    ).first
+
+    # Créer une nouvelle conversation si elle n'existe pas
+    @conversation ||= Conversation.create!(
+      user1: current_user,
+      user2: @other_user
+    )
+
     redirect_to @conversation
+  rescue ActiveRecord::RecordNotFound
+    redirect_to conversations_path, alert: "Utilisateur non trouvé."
+  rescue => e
+    Rails.logger.error "Erreur lors de la création de la conversation: #{e.message}"
+    redirect_to conversations_path, alert: "Une erreur est survenue lors de la création de la conversation."
   end
 end
