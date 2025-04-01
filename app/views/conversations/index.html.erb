@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Mes conversations</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <% @conversations.each do |user, conversations| %>
+            <% conversation = conversations.first %>
+            <%= link_to conversation_path(conversation), class: "list-group-item list-group-item-action" do %>
+              <div class="d-flex align-items-center">
+                <%= image_tag user.avatar_url, class: "rounded-circle me-2", style: "width: 40px; height: 40px;" %>
+                <div>
+                  <h6 class="mb-0"><%= user.pseudo %></h6>
+                  <small class="text-muted">
+                    <%= conversation.messages.last&.text&.truncate(50) || "Aucun message" %>
+                  </small>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Nouvelle conversation</h5>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <% @contacts.each do |contact| %>
+              <%= link_to conversations_path(user_id: contact.id), 
+                  class: "list-group-item list-group-item-action",
+                  data: { turbo_method: "post" } do %>
+                <div class="d-flex align-items-center">
+                  <%= image_tag contact.avatar_url, class: "rounded-circle me-2", style: "width: 40px; height: 40px;" %>
+                  <div>
+                    <h6 class="mb-0"><%= contact.pseudo %></h6>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

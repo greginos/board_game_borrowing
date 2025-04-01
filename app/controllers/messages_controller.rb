@@ -1,33 +1,26 @@
 class MessagesController < ApplicationController
   before_action :authenticate_user!
-
-  def index
-    @conversations = Message.where(from: current_user)
-                          .or(Message.where(to: current_user))
-                          .order(created_at: :desc)
-                          .group_by { |m| [ m.from, m.to ].find { |u| u != current_user } }
-  end
-
-  def show
-    @other_user = User.find(params[:id])
-    @messages = Message.where(from: [ current_user, @other_user ], to: [ current_user, @other_user ])
-                      .order(created_at: :asc)
-  end
+  before_action :set_conversation, only: [ :create ]
 
   def create
-    @message = current_user.sent_messages.build(message_params)
-    @message.to = User.find(message_params[:to_id])
-    @message.friendship = current_user.friendship_with(@message.to)
+    @message = @conversation.messages.build(message_params)
+    @message.from = current_user
+    @message.to = @conversation.other_user(current_user)
+
     if @message.save
-      redirect_to conversation_messages_path(id: @message.to.id), notice: "Message envoy\u00E9."
+      redirect_to @conversation, notice: "Message envoyé."
     else
-      redirect_to conversation_messages_path(id: @message.to.id), alert: "Erreur lors de l'envoi du message."
+      redirect_to @conversation, alert: "Erreur lors de l'envoi du message."
     end
   end
 
   private
 
+  def set_conversation
+    @conversation = Conversation.find(params[:conversation_id])
+  end
+
   def message_params
-    params.require(:message).permit(:text, :to_id)
+    params.require(:message).permit(:text)
   end
 end

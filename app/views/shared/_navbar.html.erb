@@ -37,7 +37,7 @@
         <%= link_to board_games_scan_board_games_path do %>
           <i class="bi bi-plus-circle"></i>
         <% end %>
-        <%= link_to user_messages_path(current_user) do %>
+        <%= link_to conversations_path do %>
           <i class="bi bi-chat-dots"></i>
         <% end %>
         <%= link_to search_form_users_path do %>
@@ -60,7 +60,7 @@
             <i class="bi bi-plus-circle me-2"></i>
             <span>Ajouter un jeu</span>
           <% end %>
-          <%= link_to user_messages_path(current_user), class: "dropdown-item" do %>
+          <%= link_to conversations_path, class: "dropdown-item" do %>
             <i class="bi bi-chat-dots me-2"></i>
             <span>Mes messages</span>
           <% end %>

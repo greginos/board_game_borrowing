@@ -18,13 +18,10 @@ Rails.application.routes.draw do
   resources :users do
     resources :games, only: [ :index ]
     resources :friendships, only: [ :create ]
-    resources :messages, only: [ :create, :index, :show, :destroy ]
   end
   resources :friendships, only: [ :update, :destroy ]
-  resources :messages, only: [ :create, :index, :show, :destroy ] do
-    collection do
-      get "conversation/:id", to: "messages#show", as: :conversation
-    end
+  resources :conversations, only: [ :index, :show, :create ] do
+    resources :messages, only: [ :create ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

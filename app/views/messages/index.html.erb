@@ -9,10 +9,14 @@
             <div class="d-flex w-100 justify-content-between align-items-center">
               <div>
                 <h5 class="mb-1"><%= user.pseudo %></h5>
-                <p class="mb-1 text-muted"><%= messages.first.text %></p>
-                <small class="text-muted">Dernier message : <%= messages.first.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+                <p class="mb-1 text-muted"><%= messages.first.text if messages.any? %></p>
+                <% if messages.any? %>
+                  <small class="text-muted">Dernier message : <%= messages.first.created_at.strftime("%d/%m/%Y %H:%M") %></small>
+                <% end %>
               </div>
-              <span class="badge bg-primary rounded-pill"><%= messages.count %></span>
+              <% if messages.any? %>
+                <span class="badge bg-primary rounded-pill"><%= messages.count %></span>
+              <% end %>
             </div>
           <% end %>
         <% end %>
@@ -20,5 +24,17 @@
     <% else %>
       <p class="text-center">Vous n'avez pas encore de conversations</p>
     <% end %>
+
+    <h2 class="mt-4">Tous les contacts</h2>
+    <div class="list-group">
+      <% @contacts.each do |contact| %>
+        <%= link_to conversations_path(user_id: contact.id), method: :post, class: "list-group-item list-group-item-action" do %>
+          <div class="d-flex w-100 justify-content-between align-items-center">
+            <h5 class="mb-1"><%= contact.pseudo %></h5>
+            <span class="badge bg-success">Commencer une conversation</span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 </div>

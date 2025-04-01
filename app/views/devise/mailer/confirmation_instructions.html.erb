@@ -1,5 +1,10 @@
-<p>Welcome <%= @email %>!</p>
+<h2>Bienvenue <%= @email %> !</h2>
 
-<p>You can confirm your account email through the link below:</p>
+<p>Merci de vous être inscrit sur Emportet.fr. Pour confirmer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<%= link_to 'Confirmer mon compte', confirmation_url(@resource, confirmation_token: @token), style: 'display: inline-block; padding: 10px 20px; background-color: #0d6efd; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;' %>
+
+<p>Si le bouton ne fonctionne pas, vous pouvez copier et coller le lien suivant dans votre navigateur :</p>
+<p><%= confirmation_url(@resource, confirmation_token: @token) %></p>
+
+<p>Si vous n'avez pas créé de compte sur Emportet.fr, vous pouvez ignorer cet email.</p>

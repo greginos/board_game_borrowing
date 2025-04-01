@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_29_230224) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_01_192327) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -94,6 +94,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_29_230224) do
     t.index ["user_id"], name: "index_borrowings_on_user_id"
   end
 
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "user1_id", null: false
+    t.bigint "user2_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user1_id", "user2_id"], name: "index_conversations_on_user1_id_and_user2_id", unique: true
+  end
+
   create_table "friendships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "friend_id", null: false
@@ -122,9 +130,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_29_230224) do
     t.datetime "updated_at", null: false
     t.bigint "from_id", null: false
     t.bigint "to_id", null: false
-    t.bigint "friendship_id", null: false
     t.text "text_ciphertext", null: false
-    t.index ["friendship_id"], name: "index_messages_on_friendship_id"
+    t.bigint "conversation_id", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["from_id"], name: "index_messages_on_from_id"
     t.index ["to_id"], name: "index_messages_on_to_id"
   end
@@ -157,7 +165,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_29_230224) do
   add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "games", "board_games"
   add_foreign_key "games", "users"
-  add_foreign_key "messages", "friendships"
+  add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users", column: "from_id"
   add_foreign_key "messages", "users", column: "to_id"
 end
