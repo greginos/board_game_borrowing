@@ -34,7 +34,9 @@ class BoardGamesController < ApplicationController
     ean = params[:ean]
     selected_game = params[:selected_game]
 
-    return find_existing_board_game(ean) if ean.present? && BoardGame.find_by(ean: ean)
+    if ean.present? && BoardGame.find_by(ean: ean)
+      return find_existing_board_game(ean)
+    end
 
     if ean.present?
       game_data = BarcodeConverter.new(ean).convert
@@ -50,9 +52,12 @@ class BoardGamesController < ApplicationController
   def create
     filtered_params = board_game_params
     game_state = filtered_params.delete("game_state")
-    @board_game = BoardGame.new(filtered_params)
-
-    if @board_game.save
+    if board_game_params[:id].present?
+      @board_game = BoardGame.find(board_game_params[:id])
+    else
+      @board_game = BoardGame.new(filtered_params)
+    end
+    if @board_game.id.present? || @board_game.save
       Game.create(board_game: @board_game, user: current_user, state: Game::STATUS[game_state])
       if params[:add_another]
         redirect_to scan_board_games_path, notice: "Jeu créé avec succès ! Ajoutez-en un autre."
@@ -154,12 +159,9 @@ class BoardGamesController < ApplicationController
     populate_board_game_from_hash(game_info) if game_info
   end
 
-
-
-  private
-
   def set_board_game
-    @board_game = BoardGame.find(params[:id])
+    board_game_id = params.dig(:board_game, :id) || params[:id]
+    @board_game = BoardGame.find(board_game_id)
   end
 
   def search_params
@@ -167,6 +169,6 @@ class BoardGamesController < ApplicationController
   end
 
   def board_game_params
-    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state, :description, :selected_game)
+    params.require(:board_game).permit(:name, :ean, :image_link, :min_players, :max_players, :minimum_age, :length, :game_state, :description, :selected_game, :id)
   end
 end
