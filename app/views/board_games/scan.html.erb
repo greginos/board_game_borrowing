@@ -52,7 +52,7 @@
                 </div>    
             <% end %>
         <% elsif @board_game.ean || flash[:alert] == "Aucune information trouvée pour ce jeu."%>
-            <%= form_with(model: @board_game, url: board_games_scan_path, method: :post, local: true, class: "mb-3") do |form| %>
+            <%= form_with(model: @board_game, url: scan_board_games_path, method: :post, local: true, class: "mb-3") do |form| %>
                 <% if @board_game.errors.any? %>
                     <div class="alert alert-danger">
                         <h2><%= pluralize(@board_game.errors.count, "error") %> erreurs empêchent l'enregistrement :</h2>
