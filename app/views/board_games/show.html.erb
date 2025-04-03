@@ -1,12 +1,13 @@
 <div class="app">
     <div class="board_game">
+    <% if current_user %>
         <div class="favorite-button">
             <%= button_to update_favorites_path, 
                 params: { id: current_user.id, favorite_id: @board_game.id },
                 method: :post,
                 class: "text-decoration-none border-0 bg-transparent",
                 data: { turbo: false } do %>
-                <% if current_user && current_user.favorites.include?(@board_game.id) %>
+                <% if current_user.favorites.include?(@board_game.id) %>
                     <svg width="2em" height="2em" viewBox="0 0 24 24" fill="#ff9d3e" stroke="#ff9d3e" stroke-width="2" stroke-linecap="round">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
@@ -17,6 +18,7 @@
                 <% end %>
             <% end %>
         </div>
+        <% end %>
         <div class="poster">
             <img src=<%= @board_game.image_link %> alt="" class="poster" />
         </div>
