@@ -72,8 +72,10 @@ class UsersController < ApplicationController
       @user = User.find(params[:user_id])
     elsif params[:id] == "me" && current_user
         @user = current_user
-    else
+    elsif params[:id]
         @user = User.find(params[:id])
+    else
+      @user = current_user
     end
   end
 
