@@ -43,8 +43,33 @@
         </div>
         <%= render 'friendships/pending_requests' if user_signed_in? && current_user == @user %>
         <%= render 'borrowings/pending_requests' if user_signed_in? && current_user == @user %>
-        
+
         <% if user_signed_in? && current_user == @user %>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Mes jeux favoris</h3>
+                </div>
+                <div class="card-body">
+                    <% if @user.favorites.any? %>
+                            <% @user.favorites.each do |favorite_id| %>
+                                <% favorite = BoardGame.find(favorite_id) %>
+                                <%= link_to board_game_path(favorite_id), class: "friend-link" do %>
+
+                                    <div class="list-group-item">
+                                        <div class="wrapper">
+                                            <div style="display: flex; align-items: center;">
+                                                <%= image_tag favorite.image_link, style: "height: 8em; object-fit: contain;" %>
+                                                <h5 class="mb-1"><%= favorite.name %></h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                    <% else %>
+                        <p class="text-muted">Aucun jeu favori pour le moment</p>
+                    <% end %>
+                </div>
+            </div>
             <% if @user.all_friends.any? %>
                 <div class="card mb-4">
                     <div class="card-header">

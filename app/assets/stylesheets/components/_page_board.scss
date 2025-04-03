@@ -72,6 +72,12 @@ App
   .icon-search {
     fill: white; /* Icône blanche */
   }
+
+  .favorite-button {
+    position: fixed;
+    top: 2em;
+    right: 2em;
+  }
   
 }
 

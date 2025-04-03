@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   devise_for :users
   get "/user" => "users#show", :as => :user_root
+  post "/users/favorites", to: "users#update_favorites", as: :update_favorites
   resources :users do
     resources :games, only: [ :index ]
     resources :friendships, only: [ :create ]
