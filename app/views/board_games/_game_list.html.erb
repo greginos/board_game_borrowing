@@ -4,7 +4,7 @@
     <%= f.hidden_field :ean, value: params[:ean] %>
     <div class="mb-3">
       <%= f.select :selected_game, 
-          @game_list.map { |game| [game[:name], "#{game[:callback_url]}|#{game[:source]}"] },
+          @game_list.map { |game| [game[:name], "#{game[:callback_url]}|#{game[:source]}"] } + [["Mon jeu n'est pas dans la liste", "new_game"]],
           { include_blank: "Sélectionnez un jeu" },
           { class: "form-select" } %>
     </div>

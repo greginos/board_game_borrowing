@@ -43,8 +43,14 @@ class BoardGamesController < ApplicationController
       process_game_data(game_data)
     end
 
-    process_selected_game(selected_game, ean) if selected_game.present?
-
+    if selected_game.present?
+      if selected_game == "new_game"
+        @board_game = BoardGame.new(ean: ean)
+        render :scan
+      else
+        process_selected_game(selected_game, ean)
+      end
+    end
 
     @board_game
   end

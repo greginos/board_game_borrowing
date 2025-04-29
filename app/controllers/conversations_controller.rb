@@ -13,6 +13,11 @@ class ConversationsController < ApplicationController
 
   def show
     @conversation = Conversation.find(params[:id])
+    # Marquer les messages non lus comme lus
+    @conversation.messages
+                .where.not(from: current_user)
+                .where(read: false)
+                .update_all(read: true)
   end
 
   def create

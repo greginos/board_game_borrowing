@@ -107,6 +107,14 @@ class User < ApplicationRecord
     Conversation.where("user1_id = ? OR user2_id = ?", id, id)
   end
 
+  def unread_messages_count
+    received_messages.where(read: false).count
+  end
+
+  def pending_borrowings_count
+    pending_borrowings_for_owner.count
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     [ "avatar", "created_at", "description", "email", "id", "pseudo", "remember_created_at", "updated_at" ]
   end

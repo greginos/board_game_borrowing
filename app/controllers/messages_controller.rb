@@ -6,6 +6,7 @@ class MessagesController < ApplicationController
     @message = @conversation.messages.build(message_params)
     @message.from = current_user
     @message.to = @conversation.other_user(current_user)
+    @message.friendship = current_user.friendship_with(@message.to)
 
     if @message.save
       redirect_to @conversation, notice: "Message envoyé."

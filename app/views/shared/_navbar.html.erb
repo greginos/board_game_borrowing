@@ -32,13 +32,27 @@
     <% if user_signed_in? %>
       <div class="nav-icons">
         <%= link_to user_path(current_user) do %>
-          <i class="bi bi-person-circle"></i>
+          <div class="position-relative">
+            <i class="bi bi-person-circle"></i>
+            <% if current_user.pending_borrowings_count > 0 %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                <%= current_user.pending_borrowings_count %>
+              </span>
+            <% end %>
+          </div>
         <% end %>
         <%= link_to board_games_scan_board_games_path do %>
           <i class="bi bi-plus-circle"></i>
         <% end %>
         <%= link_to conversations_path do %>
-          <i class="bi bi-chat-dots"></i>
+          <div class="position-relative">
+            <i class="bi bi-chat-dots"></i>
+            <% if current_user.unread_messages_count > 0 %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                <%= current_user.unread_messages_count %>
+              </span>
+            <% end %>
+          </div>
         <% end %>
         <%= link_to search_form_users_path do %>
           <i class="bi bi-person-plus"></i>
@@ -53,16 +67,30 @@
         </a>
         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <%= link_to user_path(current_user), class: "dropdown-item" do %>
-            <i class="bi bi-person-circle me-2"></i>
-            <span>Mon profil</span>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-person-circle me-2"></i>
+              <span>Mon profil</span>
+              <% if current_user.pending_borrowings_count > 0 %>
+                <span class="badge rounded-pill bg-warning ms-auto">
+                  <%= current_user.pending_borrowings_count %>
+                </span>
+              <% end %>
+            </div>
           <% end %>
           <%= link_to board_games_scan_board_games_path, class: "dropdown-item" do %>
             <i class="bi bi-plus-circle me-2"></i>
             <span>Ajouter un jeu</span>
           <% end %>
           <%= link_to conversations_path, class: "dropdown-item" do %>
-            <i class="bi bi-chat-dots me-2"></i>
-            <span>Mes messages</span>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-chat-dots me-2"></i>
+              <span>Mes messages</span>
+              <% if current_user.unread_messages_count > 0 %>
+                <span class="badge rounded-pill bg-warning ms-auto">
+                  <%= current_user.unread_messages_count %>
+                </span>
+              <% end %>
+            </div>
           <% end %>
           <%= link_to search_form_users_path, class: "dropdown-item" do %>
             <i class="bi bi-person-plus me-2"></i>
